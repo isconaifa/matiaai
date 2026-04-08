@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
+import { AuthService } from '../../core/services/auth.service';
 
 interface ConsultaRecente {
   id: number;
@@ -17,6 +18,8 @@ interface ConsultaRecente {
 })
 export class Sidebar {
 
+  private authService = inject(AuthService)
+
   recentes: ConsultaRecente[] = [
     { id: 1, titulo: 'Lei 14.129/2021 - Governo Digital', tempo: '2h atrás', favorito: false },
     { id: 2, titulo: 'Recurso Especial - Direito Tributário', tempo: '1 dia atrás', favorito: true },
@@ -27,4 +30,8 @@ export class Sidebar {
     { id: 1, titulo: 'Recurso Especial - Direito Tributário', tempo: '1 dia atrás', favorito: true },
     { id: 2, titulo: 'Parecer Jurídico - Licitação', tempo: '3 dias atrás', favorito: true },
   ];
+
+  logout() {
+    this.authService.logout();
+  }
 }

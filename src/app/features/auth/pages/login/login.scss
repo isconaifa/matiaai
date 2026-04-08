@@ -292,6 +292,16 @@
   }
 }
 
+// ── CLASSES UTILITÁRIAS ────────────────────────────────
+::ng-deep .msg-erro,
+.msg-erro {
+  color: $red-error !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 4px;
+  display: block;
+}
+
 // ── BOTÃO CADASTRAR ────────────────────────────────────
 :host ::ng-deep .btn-register.p-button {
   background: transparent !important;
