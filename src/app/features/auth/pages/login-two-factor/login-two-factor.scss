@@ -1,0 +1,167 @@
+@use 'variables' as *;
+
+// Definições de cores (Mantendo seu Navy Deep)
+$color-bg-dark: #00122e;      
+$color-gold: #fec601;         
+$color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
+
+.secure-page-single {
+  min-height: 100vh;
+  background-color: $color-bg-dark;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: 2rem;
+
+  .geo-overlay {
+    position: absolute;
+    inset: 0;
+    opacity: 0.04;
+    background-image: radial-gradient($color-gold 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
+
+.content-container {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+
+.brand-section {
+  margin-bottom: 2.5rem;
+  
+  .brand-title {
+    font-family: $font-display;
+    font-size: 4.5rem;
+    color: $color-gold;
+    margin: 0;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+  }
+
+  .security-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba($color-gold, 0.1);
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1px solid rgba($color-gold, 0.2);
+    margin-top: 10px;
+
+    .status-text {
+      color: $color-gold;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+    }
+  }
+}
+
+.secure-card {
+  background: white;
+  padding: 3.5rem 2.8rem;
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  text-align: left;
+}
+
+.card-header {
+  margin-bottom: 2.5rem;
+  
+  .header-mark {
+    width: 44px;
+    height: 44px;
+    background: rgba($color-gold, 0.1);
+    color: $color-gold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+  }
+
+  .card-title {
+    font-size: 1.8rem;
+    color: $color-navy-text; // ✅ Título está nesta cor
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .eyebrow {
+    color: #64748b;
+    font-size: 1rem;
+  }
+}
+
+/* 🚀 BOTÃO CONFIRMAR (Label em Azul Escuro) */
+:host ::ng-deep .btn-secure.p-button {
+  background: $color-gold !important;
+  border: none !important;
+  padding: 1.2rem !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 14px rgba($color-gold, 0.3) !important;
+  
+  // 🔥 Forçando o Label a ter a mesma cor do título
+  .p-button-label {
+    color: $color-navy-text !important; 
+    font-weight: 800 !important;
+    font-size: 1rem !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  &:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+  }
+}
+
+/* 🔗 BOTÃO RETORNAR (Label em Azul Escuro sobre fundo branco/claro do card) */
+:host ::ng-deep .btn-text-secure.p-button {
+  margin-top: 1.2rem;
+  
+  // 🔥 Forçando o Label a ter a mesma cor do título
+  .p-button-label {
+    color: $color-navy-text !important;
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+  }
+
+  &:hover {
+    .p-button-label {
+      text-decoration: underline;
+      opacity: 0.8;
+    }
+    background: transparent !important;
+  }
+}
+
+/* 💎 INPUT OTP */
+:host ::ng-deep .p-inputotp-input {
+  background: #f8fafc !important;
+  color: $color-navy-text !important;
+  border: 2px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  width: 3.6rem !important;
+  height: 4.8rem !important;
+  font-size: 2rem !important;
+  font-weight: 800 !important;
+
+  &:focus {
+    border-color: $color-gold !important;
+    box-shadow: 0 0 0 4px rgba($color-gold, 0.2) !important;
+  }
+}
+
+.instruction-text {
+  margin-top: 2.5rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}

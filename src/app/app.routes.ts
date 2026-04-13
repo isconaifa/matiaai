@@ -2,15 +2,20 @@ import { Routes } from '@angular/router';
 
 export const routes: Routes = [
   // Rota inicial → redireciona para login
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'login-two-factor', pathMatch: 'full' },
 
-  // Login
+  // Login (Fase 1: Senha)
   {
     path: 'login',
     loadComponent: () => import('./features/auth/pages/login/login').then(m => m.Login)
   },
+  // Login 2FA (Fase 2: Código do Celular)
+  {
+    path: 'login-two-factor',
+    loadComponent: () => import('./features/auth/pages/login-two-factor/login-two-factor').then(m => m.LoginTwoFactor)
+  },
 
-  // Sistema (com layout)
+  // Sistema (com layout) - Área Protegida
   {
     path: 'matia',
     loadComponent: () => import('./layout/main-layout/main-layout').then(m => m.MainLayout),

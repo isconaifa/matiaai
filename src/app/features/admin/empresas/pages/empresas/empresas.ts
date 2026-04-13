@@ -1,9 +1,16 @@
-import { Component, OnInit, signal, computed } from '@angular/core';
+import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
 import { TooltipModule } from 'primeng/tooltip';
+import { NonNullableFormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Company } from '../../../../../core/services/company';
+import { Router } from '@angular/router';
+// PrimeNG Imports (Adicione conforme seu uso)
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { MessageService } from 'primeng/api';
+import { PasswordModule } from 'primeng/password';
+import { InputMaskModule } from 'primeng/inputmask';
 
 interface Empresa {
   id: string;
@@ -30,12 +37,21 @@ interface Empresa {
     FormsModule,
     ButtonModule,
     InputTextModule,
-    TooltipModule
+    TooltipModule,
+    PasswordModule,
+    InputMaskModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './empresas.html',
   styleUrl: './empresas.scss',
 })
 export class Empresas implements OnInit {
+
+  //injection dependencies
+  private router = inject(Router);
+  private companyService = inject(Company);
+  private messageService = inject(MessageService);
+  private fb = inject(NonNullableFormBuilder);
   // Signals
   empresas = signal<Empresa[]>([]);
   filteredEmpresas = signal<Empresa[]>([]);

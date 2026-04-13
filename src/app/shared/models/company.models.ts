@@ -1,20 +1,36 @@
-export interface CreateCompanyDTO {
+// Shared Models: src/app/shared/models/company.models.ts
+
+export interface CompanyData {
   name: string;
   code: string;
   cnpj: string;
   email: string;
   phone: string;
-  plano: 'trial' | 'basico' | 'profissional' | 'enterprise';
-  active?: boolean;
+  plano: string;
+  active: boolean;
 }
 
-// O que você recebe do Backend nas listagens e buscas
-export interface CompanyResponseDTO extends CreateCompanyDTO {
-  id: string;
-  data_cadastro: string | Date;
-  usuarios_count: number | null;
-  consulta_mes: number | null;
-  custo_mes: number | null;
-  created_at: string | Date;
-  updated_at: string | Date;
+export interface AdminData {
+  nome: string;
+  email: string;
+  cpf: string;
+  telefone: string;
+  data_nascimento: string; // ISO string (YYYY-MM-DD)
+  profile_password: string;
+}
+
+// Esta é a interface principal que você usará no serviço
+export interface RegisterCompanyRequest {
+  company: CompanyData;
+  admin: AdminData;
+}
+
+// Interface para a resposta do servidor (opcional, mas ajuda muito)
+export interface RegisterCompanyResponse {
+  success: boolean;
+  message: string;
+  data: {
+    empresa: CompanyData & { id: string; created_at: string };
+    admin: Omit<AdminData, 'profile_password'> & { id: string; empresa_id: string };
+  };
 }

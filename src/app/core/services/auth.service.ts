@@ -3,33 +3,31 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { LoginRequest, LoginResponse } from '../../shared/models/auth.models';
+import { LoginRequest, LoginResponse, AuthResponse } from '../../shared/models/auth.models';
 import { UserPayload } from '../../shared/models/user.models';
-
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  // 1. Injeção de dependências moderna
   private http = inject(HttpClient);
   private router = inject(Router);
   private messageService = inject(MessageService);
 
-  // 2. URL da API no Docker
   private readonly API_URL = 'http://localhost:3002/api/auth';
 
-  // 3. Signals para estado reativo super rápido
+  // Signals de estado
   currentUser = signal<UserPayload | null>(null);
   isAuthenticated = signal<boolean>(false);
+  
+  // 🔥 Novo Signal para guardar o token temporário do 2FA
+  // Não salvamos isso no LocalStorage por segurança!
+  preAuthToken = signal<string | null>(null);
 
   constructor() {
     this.loadUserFromStorage();
   }
 
-  /**
-   * Verifica se o usuário já fez login antes (F5 na página)
-   */
   private loadUserFromStorage() {
     const token = localStorage.getItem('matia_token');
     const userStr = localStorage.getItem('matia_user');
@@ -44,48 +42,81 @@ export class AuthService {
       }
     }
   }
- // Envia as credenciais para o Docker e salva o retorno
-   login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.API_URL}/login`, credentials).pipe(
+
+  /**
+   * FASE 1: Login com credenciais
+   */
+ // 1. Mude o retorno para Observable<AuthResponse>
+login(credentials: LoginRequest): Observable<AuthResponse> {
+  // 2. Mude o post para <AuthResponse>
+  return this.http.post<AuthResponse>(`${this.API_URL}/login`, credentials).pipe(
+    tap((response) => {
+      // Cenário A: Verificamos se a propriedade exclusiva do 2FA existe no objeto
+      if ('requires_2fa' in response) {
+        this.preAuthToken.set(response.preAuthToken);
+        this.messageService.add({
+          severity: 'info',
+          summary: '2FA Necessário',
+          detail: 'Por favor, insira o código do seu autenticador.'
+        });
+        this.router.navigate(['/login-2fa']);
+      } 
+      // Cenário B: Se não caiu no IF acima, o TS agora entende que é um LoginResponse
+      // Usamos 'token' in response para garantir a tipagem no else if
+      else if ('token' in response) {
+        this.finalizeLogin(response);
+      }
+    })
+  );
+}
+
+  /**
+   * FASE 2: Validação do código TOTP
+   */
+  login2FA(token2fa: string): Observable<LoginResponse> {
+    const preToken = this.preAuthToken();
+    
+    return this.http.post<LoginResponse>(`${this.API_URL}/login-2fa`, {
+      preAuthToken: preToken,
+      token2fa: token2fa
+    }).pipe(
       tap((response) => {
-        if (response.success && response.token && response.user) {
-          // Salva no navegador
-          localStorage.setItem('matia_token', response.token);
-          localStorage.setItem('matia_user', JSON.stringify(response.user));
-          
-          // Atualiza o estado da aplicação
-          this.currentUser.set(response.user);
-          this.isAuthenticated.set(true);
+        if (response.token && response.user) {
+          this.finalizeLogin(response);
+          this.preAuthToken.set(null); // Limpa o token temporário
         }
       })
     );
   }
 
-
   /**
-   * Limpa os dados e joga para a tela de login
-   */logout(): void {
-  // 1. Limpa o armazenamento físico
-  localStorage.removeItem('matia_token');
-  localStorage.removeItem('matia_user');
+   * Centraliza a gravação dos dados após sucesso total
+   */
+  private finalizeLogin(response: LoginResponse) {
+    localStorage.setItem('matia_token', response.token);
+    localStorage.setItem('matia_user', JSON.stringify(response.user));
+    
+    this.currentUser.set(response.user);
+    this.isAuthenticated.set(true);
+  }
 
-  // 2. Atualiza os Signals (isso faz sumir o nome do usuário da tela na hora)
-  this.currentUser.set(null);
-  this.isAuthenticated.set(false);
+  logout(): void {
+    localStorage.removeItem('matia_token');
+    localStorage.removeItem('matia_user');
+    this.currentUser.set(null);
+    this.isAuthenticated.set(false);
+    this.preAuthToken.set(null);
 
-  // 3. Exibe o Toast de despedida
-  this.messageService.add({
-    severity: 'info',
-    summary: 'Sessão Encerrada',
-    detail: 'Você saiu do sistema com segurança.',
-    life: 3000
-  });
+    this.messageService.add({
+      severity: 'info',
+      summary: 'Sessão Encerrada',
+      detail: 'Você saiu com segurança.',
+      life: 3000
+    });
 
-  // 4. Redireciona
-  this.router.navigate(['/matia/login']);
-}
+    this.router.navigate(['/login']);
+  }
 
-  // Pega o token atual (Será usado no Interceptor depois)
   getToken(): string | null {
     return localStorage.getItem('matia_token');
   }

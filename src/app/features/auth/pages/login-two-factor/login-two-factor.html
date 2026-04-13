@@ -1,0 +1,64 @@
+<div class="secure-page-single">
+  <div class="geo-overlay"></div>
+
+  <div class="content-container">
+    <div class="brand-section">
+      <h1 class="brand-title">MATIA</h1>
+      <div class="security-badge">
+        <span class="lock-icon">🔒</span>
+        <span class="status-text">SISTEMA BLINDADO</span>
+      </div>
+    </div>
+
+    <div class="secure-card">
+      <div class="card-header">
+        <div class="header-mark">MT</div>
+        <h2 class="card-title">Token de Segurança</h2>
+        <span class="eyebrow">Segunda etapa de autenticação</span>
+      </div>
+
+      <div class="otp-wrapper">
+        <p class="field-label">Código de 6 dígitos</p>
+        
+        <div class="flex justify-content-center">
+          <p-inputOtp 
+            [(ngModel)]="otpValue" 
+            [length]="6" 
+            [integerOnly]="true"
+            (onChange)="onOtpChange($event)">
+          </p-inputOtp>
+        </div>
+
+        @if (errorMessage()) {
+        <div class="error-container">
+          <span class="error-message">{{ errorMessage() }}</span>
+        </div>
+        }
+      </div>
+
+      <div class="action-group">
+        <p-button 
+          label="CONFIRMAR E ACESSAR" 
+          [fluid]="true" 
+          styleClass="btn-secure" 
+          [loading]="isLoading()"
+          [disabled]="otpValue.length < 6"
+          (onClick)="verifyOtp()">
+        </p-button>
+
+        <p-button 
+          label="Retornar ao início" 
+          [fluid]="true" 
+          styleClass="p-button-text btn-text-secure" 
+          (onClick)="backToLogin()">
+        </p-button>
+      </div>
+    </div>
+
+    <div class="instruction-text">
+      <p>O acesso à sua conta requer autenticação de dois fatores. Abra o seu aplicativo autenticador para visualizar o código.</p>
+    </div>
+  </div>
+</div>
+
+<p-toast position="top-right"></p-toast>

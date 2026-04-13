@@ -301,45 +301,42 @@
     <div class="modal-overlay" (click)="fecharModal()">
       <div class="modal" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <span class="modal-title">{{ modalMode === 'criar' ? 'Nova Empresa' : 'Editar Empresa' }}</span>
+          <span class="modal-title">Nova Empresa</span>
           <button class="modal-close" (click)="fecharModal()">✕</button>
         </div>
 
         <div class="modal-body">
+
+          <div class="section-label">Dados da Empresa</div>
           <div class="form-grid">
             <div class="field-group span2">
               <label class="field-label">Nome da Empresa</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="empresaForm.nome" placeholder="Ex: Tribunal de Justiça de MT"/>
-            </div>
-            
-            <div class="field-group">
-              <label class="field-label">Código</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="empresaForm.codigo" placeholder="Ex: TJMT"/>
-            </div>
-            
-            <div class="field-group">
-              <label class="field-label">CNPJ</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="empresaForm.cnpj" placeholder="00.000.000/0000-00"/>
+              <input pInputText type="text" class="field-input" placeholder="Ex: Tribunal de Justiça de MT"/>
             </div>
 
             <div class="field-group">
-              <label class="field-label">Responsável</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="empresaForm.responsavel" placeholder="Nome completo"/>
+              <label class="field-label">Código</label>
+              <input pInputText type="text" class="field-input" placeholder="Ex: TJMT"/>
             </div>
-            
+
+            <div class="field-group">
+              <label class="field-label">CNPJ</label>
+              <input pInputText type="text" class="field-input" placeholder="00.000.000/0000-00"/>
+            </div>
+
             <div class="field-group">
               <label class="field-label">E-mail</label>
-              <input pInputText type="email" class="field-input" [(ngModel)]="empresaForm.email" placeholder="contato@empresa.com"/>
+              <input pInputText type="email" class="field-input" placeholder="contato@empresa.com"/>
             </div>
 
             <div class="field-group">
               <label class="field-label">Telefone</label>
-              <input pInputText type="tel" class="field-input" [(ngModel)]="empresaForm.telefone" placeholder="(65) 99999-9999"/>
+              <input pInputText type="tel" class="field-input" placeholder="(65) 99999-9999"/>
             </div>
 
             <div class="field-group">
               <label class="field-label">Plano</label>
-              <select class="field-select" [(ngModel)]="empresaForm.plano">
+              <select class="field-select">
                 <option value="trial">Trial (30 dias)</option>
                 <option value="basico">Básico</option>
                 <option value="profissional">Profissional</option>
@@ -353,22 +350,49 @@
                   <div class="toggle-text-modal">Empresa Ativa</div>
                   <div class="toggle-sub-modal">Acesso permitido ao sistema</div>
                 </div>
-                <div class="toggle" [class.on]="empresaForm.ativa" (click)="empresaForm.ativa = !empresaForm.ativa"></div>
+                <div class="toggle on"></div>
               </div>
             </div>
           </div>
+
+          <div class="section-label" style="margin-top: 1.5rem;">Dados do Administrador</div>
+          <div class="form-grid">
+            <div class="field-group span2">
+              <label class="field-label">Nome Completo</label>
+              <input pInputText type="text" class="field-input" placeholder="Nome completo"/>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">E-mail</label>
+              <input pInputText type="email" class="field-input" placeholder="admin@empresa.com"/>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">CPF</label>
+              <input pInputText type="text" class="field-input" placeholder="000.000.000-00"/>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Telefone</label>
+              <input pInputText type="tel" class="field-input" placeholder="(65) 99999-9999"/>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Data de Nascimento</label>
+              <input pInputText type="date" class="field-input"/>
+            </div>
+
+            <div class="field-group span2">
+              <label class="field-label">Senha de Acesso</label>
+              <input pInputText type="password" class="field-input" placeholder="Mínimo 8 caracteres"/>
+            </div>
+          </div>
+
         </div>
 
         <div class="modal-actions">
-          <p-button 
-            label="Cancelar" 
-            styleClass="btn-outline" 
-            [outlined]="true" 
-            (onClick)="fecharModal()"/>
-          <p-button 
-            label="{{ modalMode === 'criar' ? '➕ Criar Empresa' : '💾 Salvar Alterações' }}" 
-            styleClass="btn-primary" 
-            (onClick)="salvarEmpresa()"/>
+          <p-button label="Cancelar" styleClass="btn-outline" [outlined]="true" (onClick)="fecharModal()"/>
+          <p-button label="➕ Criar Empresa" styleClass="btn-primary" (onClick)="salvarEmpresa()"/>
         </div>
       </div>
     </div>
