@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 
 //Imports de pipes
@@ -11,7 +12,8 @@ import { BrlCurrencyPipe } from '../../../../shared/pipes/brl-currency-pipe';
 // Imports dos seus Services e Models
 import { AuthService } from '../../../../core/services/auth.service';
 import { UserService } from '../../../../core/services/user.service';
-import { UserProfile, UserProfileUpdate, ActivityHistory } from '../../../../shared/models/user.models';
+import { UserProfile, UserProfileUpdate, ActivityHistory, UserPayload} from '../../../../shared/models/user.models';
+import { Setup2FAResponse } from '../../../../shared/models/auth.models';
 
 // Imports do PrimeNG
 import { DialogModule } from 'primeng/dialog';
@@ -64,6 +66,7 @@ export class Perfil implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private messageService = inject(MessageService);
+  private sanitizer = inject(DomSanitizer);
 
   // Variáveis de UI: Senha
   showAtual = false;
@@ -77,7 +80,7 @@ export class Perfil implements OnInit {
   // Variáveis de Estado do 2FA (Ativação)
   is2FAEnabled: boolean = false;
   displayModal2FA: boolean = false;
-  qrCodeImage: string | null = null;
+  qrCodeImage: SafeUrl | string | null = null; 
   setupOtpValue: string = '';
 
   // Variáveis adicionais para o Modal de Desativação
@@ -95,26 +98,31 @@ export class Perfil implements OnInit {
     // 1. Pegamos IMEDIATAMENTE os dados básicos que o Login salvou no Signal
     const usuarioLogado = this.authService.currentUser();
     if (usuarioLogado) {
-    // Preenchemos a tela com o que já temos (Nome, Email, Role)
-    this.userProfile = {
-      ...this.userProfile,
-      nome: usuarioLogado.nome,
-      email: usuarioLogado.email,
-      role: usuarioLogado.role,
-      empresa_id: usuarioLogado.empresa_id
-    } as UserProfile;
-  }
+      // Preenchemos a tela com o que já temos (Nome, Email, Role)
+      this.userProfile = {
+        ...this.userProfile,
+        nome: usuarioLogado.nome,
+        email: usuarioLogado.email,
+        role: usuarioLogado.role,
+        empresa_id: usuarioLogado.empresa_id
+      } as UserProfile;
+    }
     this.carregarDadosDoUsuario();
   }
 
   carregarDadosDoUsuario() {
     this.userService.getProfile().subscribe({
       next: (user: UserProfile) => {
+        if (user.data_nascimento) {
+          user.data_nascimento = new Date(user.data_nascimento).toISOString().split('T')[0];
+        }
         this.userProfile = user;
         this.is2FAEnabled = user.two_factor_enabled;
+        console.log('Dados formatados para a tela:', this.userProfile);
       },
       error: (err) => {
-        this.mostrarToast('error', 'Erro', 'Não foi possível carregar os dados do perfil.');
+        console.error('Erro 400 detalhado:', err);
+        this.mostrarToast('error', 'Erro', 'Não foi possível carregar os dados.');
       }
     });
   }
@@ -124,30 +132,39 @@ export class Perfil implements OnInit {
   // ==========================================
 
   abrirSetup2FA() {
-    this.displayModal2FA = true;
-    this.setupOtpValue = '';
-    this.qrCodeImage = null;
+  this.displayModal2FA = true;
+  this.setupOtpValue = '';
+  this.qrCodeImage = null;
 
-    this.authService.get2FASetup().subscribe({
-      next: (res) => {
-        this.qrCodeImage = res.qrcode;
-      },
-      error: (err) => {
-        this.displayModal2FA = false;
-        this.mostrarToast('error', 'Falha', 'Erro ao gerar QR Code. Tente novamente.');
+  // Garanta que o AuthService.get2FASetup() também retorne Observable<Setup2FAResponse>
+  this.authService.get2FASetup().subscribe({
+    next: (res: Setup2FAResponse) => {
+      console.log('Resposta do Setup:', res);
+      
+      // Se o backend enviar 'qrCodeDataUrl', mas sua interface diz 'qrcode',
+      // você pode fazer essa pequena validação:
+      const rawData = res.qrcode || (res as any).qrCodeDataUrl;
+
+      if (rawData) {
+        this.qrCodeImage = this.sanitizer.bypassSecurityTrustUrl(rawData);
       }
-    });
-  }
-  carregarHistorico() {
-  this.userService.getActivityHistory().subscribe({
-    next: (data) => {
-      this.atividades = data;
     },
-    error: () => {
-      this.mostrarToast('error', 'Erro', 'Não foi possível carregar o histórico.');
+    error: (err) => {
+      this.displayModal2FA = false;
+      this.mostrarToast('error', 'Falha', 'Erro ao gerar QR Code.');
     }
   });
 }
+  carregarHistorico() {
+    this.userService.getActivityHistory().subscribe({
+      next: (data) => {
+        this.atividades = data;
+      },
+      error: () => {
+        this.mostrarToast('error', 'Erro', 'Não foi possível carregar o histórico.');
+      }
+    });
+  }
 
   // Mantenha apenas para o feedback visual por enquanto
   salvarSenha() {
@@ -224,7 +241,6 @@ export class Perfil implements OnInit {
   salvarDadosPessoais() {
     if (!this.userProfile) return;
 
-    // Montamos o objeto de update conforme sua interface UserProfileUpdate
     const dadosParaAtualizar: UserProfileUpdate = {
       nome: this.userProfile.nome,
       email: this.userProfile.email,
@@ -235,7 +251,15 @@ export class Perfil implements OnInit {
     this.userService.updateProfile(dadosParaAtualizar).subscribe({
       next: (res) => {
         this.mostrarToast('success', 'Sucesso', 'Dados atualizados com sucesso!');
-        // Opcional: recarregar os dados para garantir sincronia
+
+        const usuarioAtualizado = (res.data || {
+          ...this.authService.currentUser(),
+          ...dadosParaAtualizar
+        }) as UserPayload;
+
+        this.authService.updateCurrentUser(usuarioAtualizado);
+
+        // Recarregar os dados do perfil para garantir sincronia com campos do banco (ex: data_nascimento formatada)
         this.carregarDadosDoUsuario();
       },
       error: (err) => {
@@ -244,7 +268,6 @@ export class Perfil implements OnInit {
       }
     });
   }
-
   private mostrarToast(severity: 'success' | 'info' | 'warn' | 'error', summary: string, detail: string) {
     this.messageService.add({ severity, summary, detail, life: 4000 });
   }

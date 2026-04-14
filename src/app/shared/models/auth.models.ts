@@ -14,6 +14,7 @@ export interface Setup2FAResponse {
 // Opcional, mas recomendado para respostas genéricas de sucesso/erro
 export interface ApiResponse {
   message: string;
+  data?: any;
 }
 
 // Resposta final de sucesso (Login direto ou após 2FA)

@@ -21,6 +21,7 @@
           <div class="profile-name">{{ userProfile?.nome || 'Carregando...' }}</div>
           <div class="profile-email">{{ userProfile?.email || '...' }}</div>
           <div class="profile-badge">⭐ {{ userProfile?.role || 'Usuário' }}</div>
+          
           <div class="profile-stats">
             <div class="profile-stat">
               <div class="stat-val">1.284</div>
@@ -39,13 +40,16 @@
               <div class="stat-lbl">Custo</div>
             </div>
           </div>
+
           <div class="profile-divider"></div>
+          
           <div class="profile-meta-item">🏛 Área: <span>{{ userProfile?.area_juridica || 'Não definida' }}</span></div>
           <div class="profile-meta-item">📅 Desde: <span>{{ (userProfile?.creation_time ?? '') | brDate }}</span></div>
-          <div class="profile-meta-item">🕐 Último acesso: <span>{{ (userProfile?.ultimo_acesso ?? '') | brDate
-              }}</span></div>
+          <div class="profile-meta-item">🕐 Último acesso: 
+            <span>{{ userProfile?.ultimo_acesso ? (userProfile?.ultimo_acesso | date: 'dd/MM/yyyy HH:mm') : 'Primeiro acesso' }}</span>
+          </div>
           <div class="profile-meta-item">🔐 2FA:
-            <span [style.color]="is2FAEnabled ? '#10b981' : '#ef4444'">
+            <span [style.color]="is2FAEnabled ? '#10b981' : '#ef4444'" style="font-weight: bold;">
               {{ is2FAEnabled ? 'Ativado' : 'Desativado' }}
             </span>
           </div>
@@ -62,7 +66,6 @@
         <div class="section-body">
           @if (userProfile) {
           <div class="form-grid">
-
             <div class="field-group">
               <label class="field-label">Nome Completo</label>
               <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.nome" />
@@ -70,7 +73,8 @@
 
             <div class="field-group">
               <label class="field-label">CPF</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.cpf" />
+              <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.cpf" disabled 
+              style="opacity: 0.6; cursor: not-allowed;"/>
             </div>
 
             <div class="field-group">
@@ -90,7 +94,8 @@
 
             <div class="field-group">
               <label class="field-label">Empresa (ID)</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.empresa_id" />
+              <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.empresa_id" disabled
+                style="opacity: 0.6; cursor: not-allowed;"/>
             </div>
 
             <div class="field-group">
@@ -116,8 +121,8 @@
               <input pInputText type="text" class="field-input" [value]="userProfile.status" disabled
                 style="opacity: 0.6; cursor: not-allowed;" />
             </div>
-
           </div>
+
           <div class="section-actions">
             <p-button label="Cancelar" styleClass="btn-outline" [outlined]="true"
               (onClick)="carregarDadosDoUsuario()"></p-button>
@@ -125,10 +130,9 @@
               (onClick)="salvarDadosPessoais()"></p-button>
           </div>
           } @else {
-          <div
-            style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 3rem 0; color: #64748b;">
-            <i class="pi pi-spin pi-spinner" style="font-size: 2rem; margin-bottom: 1rem; color: #00296b;"></i>
-            <span>Carregando dados do perfil...</span>
+          <div class="loading-wrap" style="display: flex; flex-direction: column; align-items: center; padding: 3rem;">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #00296b;"></i>
+            <span class="mt-2">Carregando perfil...</span>
           </div>
           }
         </div>
@@ -136,58 +140,8 @@
 
       <div class="section-card">
         <div class="section-header">
-          <span class="section-title">🔒 Alterar Senha</span>
-        </div>
-        <div class="section-body">
-          <div class="form-grid">
-            <div class="field-group span2">
-              <label class="field-label">Senha Atual</label>
-              <div class="pw-wrap">
-                <input pInputText [type]="showAtual ? 'text' : 'password'" class="field-input"
-                  placeholder="••••••••••" />
-                <button class="pw-toggle" (click)="showAtual = !showAtual">
-                  <i class="pi" [class.pi-eye]="!showAtual" [class.pi-eye-slash]="showAtual"></i>
-                </button>
-              </div>
-            </div>
-            <div class="field-group">
-              <label class="field-label">Nova Senha</label>
-              <div class="pw-wrap">
-                <input pInputText [type]="showNova ? 'text' : 'password'" class="field-input" placeholder="••••••••••"
-                  (input)="checarForca($event)" />
-                <button class="pw-toggle" (click)="showNova = !showNova">
-                  <i class="pi" [class.pi-eye]="!showNova" [class.pi-eye-slash]="showNova"></i>
-                </button>
-              </div>
-              <div class="pw-strength">
-                <div class="pw-bar" [class]="forca >= 1 ? 'pw-bar ' + forcaClasse : 'pw-bar'"></div>
-                <div class="pw-bar" [class]="forca >= 2 ? 'pw-bar ' + forcaClasse : 'pw-bar'"></div>
-                <div class="pw-bar" [class]="forca >= 3 ? 'pw-bar ' + forcaClasse : 'pw-bar'"></div>
-                <span class="pw-label" [style.color]="forcaCor">{{ forcaLabel }}</span>
-              </div>
-            </div>
-            <div class="field-group">
-              <label class="field-label">Confirmar Nova Senha</label>
-              <div class="pw-wrap">
-                <input pInputText [type]="showConfirm ? 'text' : 'password'" class="field-input"
-                  placeholder="••••••••••" />
-                <button class="pw-toggle" (click)="showConfirm = !showConfirm">
-                  <i class="pi" [class.pi-eye]="!showConfirm" [class.pi-eye-slash]="showConfirm"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="section-actions">
-            <p-button label="🔒 Alterar Senha" styleClass="btn-primary" [disabled]="true" (onClick)="salvarSenha()">
-            </p-button>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-header">
           <span class="section-title">📱 Autenticação em Duas Etapas (2FA)</span>
-          <span class="section-sub">Proteja sua conta com um aplicativo autenticador</span>
+          <span class="section-sub">Segurança extra para sua conta</span>
         </div>
         <div class="section-body">
           <div class="form-grid"
@@ -199,8 +153,7 @@
                 </span>
               </h3>
               <p style="margin: 0; color: #64748b; font-size: 0.9rem; max-width: 400px; line-height: 1.4;">
-                Quando ativado, você precisará inserir um código gerado pelo seu celular (ex: Google Authenticator) ao
-                fazer login.
+                Proteja sua conta exigindo um código do celular a cada novo login.
               </p>
             </div>
             <div class="section-actions" style="margin: 0;">
@@ -217,57 +170,40 @@
 
       <div class="section-card">
         <div class="section-header">
-          <span class="section-title">🛡 Permissões por Área Jurídica</span>
-          <span class="section-sub">RBAC — Controle por domínio</span>
+          <span class="section-title">🔒 Alterar Senha</span>
         </div>
         <div class="section-body">
-          <div class="rbac-grid">
-            @for (area of areas; track area.nome) {
-            <div class="rbac-area">
-              <div class="rbac-area-header">
-                <div class="rbac-area-name">
-                  <div class="rbac-dot" [style.background]="area.cor"></div>
-                  {{ area.nome }}
-                </div>
-                <div class="toggle" [class.on]="area.ativo" (click)="area.ativo = !area.ativo"></div>
-              </div>
-              <div class="rbac-perms">
-                @for (perm of area.permissoes; track perm.label) {
-                <label class="perm-item">
-                  <div class="perm-check" [class.checked]="perm.ativo" (click)="perm.ativo = !perm.ativo">
-                    @if (perm.ativo) { ✓ }
-                  </div>
-                  <span class="perm-text">{{ perm.label }}</span>
-                </label>
-                }
+          <div class="form-grid">
+            <div class="field-group span2">
+              <label class="field-label">Senha Atual</label>
+              <div class="pw-wrap">
+                <input pInputText [type]="showAtual ? 'text' : 'password'" class="field-input" placeholder="••••••••••" />
+                <button class="pw-toggle" (click)="showAtual = !showAtual">
+                  <i class="pi" [class.pi-eye]="!showAtual" [class.pi-eye-slash]="showAtual"></i>
+                </button>
               </div>
             </div>
-            }
+            <div class="field-group">
+              <label class="field-label">Nova Senha</label>
+              <div class="pw-wrap">
+                <input pInputText [type]="showNova ? 'text' : 'password'" class="field-input" (input)="checarForca($event)" />
+                <button class="pw-toggle" (click)="showNova = !showNova">
+                  <i class="pi" [class.pi-eye]="!showNova" [class.pi-eye-slash]="showNova"></i>
+                </button>
+              </div>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Confirmar Nova Senha</label>
+              <div class="pw-wrap">
+                <input pInputText [type]="showConfirm ? 'text' : 'password'" class="field-input" />
+                <button class="pw-toggle" (click)="showConfirm = !showConfirm">
+                  <i class="pi" [class.pi-eye]="!showConfirm" [class.pi-eye-slash]="showConfirm"></i>
+                </button>
+              </div>
+            </div>
           </div>
           <div class="section-actions">
-            <p-button label="💾 Salvar Dados" styleClass="btn-primary" (onClick)="salvarDadosPessoais()">
-            </p-button>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-header">
-          <span class="section-title">🕐 Histórico de Atividades</span>
-          <span class="section-sub">Últimas 10 ações</span>
-        </div>
-        <div class="section-body">
-          <div class="activity-list">
-            @for (item of atividades; track item.id) {
-            <div class="activity-item">
-              <div class="activity-icon" [class]="'activity-icon ' + item.tipo">{{ item.icone }}</div>
-              <div class="activity-content">
-                <div class="activity-title">{{ item.titulo }}</div>
-                <div class="activity-detail">{{ item.detalhe }}</div>
-              </div>
-              <div class="activity-time">{{ item.tempo }}</div>
-            </div>
-            }
+            <p-button label="🔒 Alterar Senha" styleClass="btn-primary" [disabled]="true"></p-button>
           </div>
         </div>
       </div>
@@ -277,39 +213,45 @@
 
   <p-dialog header="Configurar Autenticador (2FA)" [(visible)]="displayModal2FA" [modal]="true"
     [style]="{width: '450px'}" [draggable]="false" [resizable]="false">
-
     <div style="text-align: center; padding: 1rem 0;">
-      <p style="color: #64748b; margin-bottom: 1.5rem; line-height: 1.5;">
-        1. Abra seu app autenticador (Google Authenticator, Authy). <br>
-        2. Escaneie o QR Code abaixo.
-      </p>
-
-      <div
-        style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
+      <p style="color: #64748b; margin-bottom: 1.5rem;">Escaneie o QR Code abaixo no seu App de Autenticação:</p>
+      
+      <div style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
         @if (qrCodeImage) {
-        <img [src]="qrCodeImage" alt="QR Code do 2FA" style="width: 200px; height: 200px; display: block;">
+          <img [src]="qrCodeImage" alt="QR Code" style="width: 200px; height: 200px; display: block;">
         } @else {
-        <div
-          style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border-radius: 8px;">
-          <i class="pi pi-spin pi-spinner" style="font-size: 2rem; color: #00296b;"></i>
-        </div>
+          <div style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #f1f5f9;">
+            <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
+          </div>
         }
       </div>
 
-      <div class="field-group" style="text-align: left;">
-        <label class="field-label" style="text-align: center; display: block;">3. Digite o código gerado pelo
-          app</label>
-        <div style="display: flex; justify-content: center; margin-top: 0.8rem;">
+      <div class="field-group">
+        <label class="field-label" style="text-align: center; display: block;">Digite o código de 6 dígitos</label>
+        <div style="display: flex; justify-content: center; margin-top: 1rem;">
           <p-inputOtp [(ngModel)]="setupOtpValue" [length]="6" [integerOnly]="true"></p-inputOtp>
         </div>
       </div>
     </div>
-
     <ng-template pTemplate="footer">
-      <p-button label="Cancelar" styleClass="btn-outline" [outlined]="true"
-        (onClick)="displayModal2FA = false"></p-button>
-      <p-button label="Validar e Ativar" styleClass="btn-primary" [disabled]="setupOtpValue.length < 6"
-        (onClick)="confirmarAtivacao()"></p-button>
+      <p-button label="Cancelar" styleClass="p-button-text" (onClick)="displayModal2FA = false"></p-button>
+      <p-button label="Validar e Ativar" styleClass="btn-primary" [disabled]="setupOtpValue.length < 6" (onClick)="confirmarAtivacao()"></p-button>
+    </ng-template>
+  </p-dialog>
+
+  <p-dialog header="Desativar Segurança 2FA" [(visible)]="displayModalDisable2FA" [modal]="true"
+    [style]="{width: '400px'}" [draggable]="false" [resizable]="false">
+    <div style="text-align: center; padding: 1rem 0;">
+      <i class="pi pi-exclamation-triangle text-red-500" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+      <p style="color: #64748b; margin-bottom: 1.5rem;">Para desativar, insira o código atual do seu aplicativo.</p>
+      
+      <div style="display: flex; justify-content: center;">
+        <p-inputOtp [(ngModel)]="disableOtpValue" [length]="6" [integerOnly]="true"></p-inputOtp>
+      </div>
+    </div>
+    <ng-template pTemplate="footer">
+      <p-button label="Manter Ativado" styleClass="p-button-text" (onClick)="displayModalDisable2FA = false"></p-button>
+      <p-button label="Confirmar Desativação" styleClass="p-button-danger" [disabled]="disableOtpValue.length < 6" (onClick)="confirmarDesativacao()"></p-button>
     </ng-template>
   </p-dialog>
 
