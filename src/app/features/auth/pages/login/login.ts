@@ -6,18 +6,18 @@ import { ToastModule } from 'primeng/toast';
 import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
-import { LoginRequest } from '../../../../shared/models/auth.models';
+import { LoginRequest, AuthResponse } from '../../../../shared/models/auth.models'; // Importamos AuthResponse
 import { InputTextModule } from 'primeng/inputtext';
 import { RippleModule } from 'primeng/ripple';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [ButtonModule, InputTextModule, RippleModule, ReactiveFormsModule, PasswordModule, ToastModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
 export class Login {
-  // Injeção de dependências moderna (sem construtor)
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private messageService = inject(MessageService);
@@ -25,11 +25,9 @@ export class Login {
 
   showPassword = false;
 
-  // Signal para controlar o estado de "Carregando" no botão
   isLoading = signal<boolean>(false);
   errorMessage = signal<string | null>(null);
 
-  // Criação do formulário com as validações
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     profile_password: ['', [Validators.required, Validators.minLength(6)]]
@@ -41,30 +39,38 @@ export class Login {
     this.isLoading.set(true);
     this.errorMessage.set(null);
 
-    // Pegamos os valores tipados do formulário
     const credentials = this.loginForm.value as LoginRequest;
 
     this.authService.login(credentials).subscribe({
-      next: (response) => {
-        this.messageService.add({ 
-        severity: 'success', 
-        summary: 'Bem-vindo!', 
-        detail: 'Login realizado com sucesso.',
-        life: 3000 // Tempo em milisegundos (3 segundos)
-      });
+      // Usamos o tipo genérico AuthResponse para aceitar ambas as respostas
+      next: (response: AuthResponse) => {
         this.isLoading.set(false);
-        // Se deu sucesso, manda o usuário para o Dashboard!
-        this.router.navigate(['/matia/dashboard']); 
+        // Deixamos a inteligência de saber "pra onde ir" no Componente,
+        // mas baseada na resposta que o Service repassa.
+
+        // Cenário 1: O usuário TEM 2FA ativado
+        if ('requires_2fa' in response) {
+          // O AuthService já salvou o preAuthToken. O MessageService avisa.
+          // Só mandamos ele pra tela do código.
+          this.router.navigate(['/login-two-factor']); 
+        } 
+        
+        // Cenário 2: O usuário NÃO TEM 2FA ativado (Entrada Direta)
+        else if ('token' in response) {
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Bem-vindo!', 
+            detail: 'Login realizado com sucesso.',
+            life: 3000
+          });
+          this.router.navigate(['/matia/dashboard']); 
+        }
       },
       error: (error) => {
         this.isLoading.set(false);
-        // Trata o erro (ex: senha errada ou usuário não existe)
         this.errorMessage.set(error.error?.message || 'Erro ao tentar fazer login. Verifique suas credenciais.');
         console.error('Erro no login:', error);
       }
     });
   }
-
-
- 
 }

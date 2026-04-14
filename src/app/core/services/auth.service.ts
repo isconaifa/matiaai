@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
-import { LoginRequest, LoginResponse, AuthResponse } from '../../shared/models/auth.models';
+import { LoginRequest, LoginResponse, AuthResponse,Setup2FAResponse, ApiResponse } from '../../shared/models/auth.models';
 import { UserPayload } from '../../shared/models/user.models';
 
 @Injectable({
@@ -43,9 +43,7 @@ export class AuthService {
     }
   }
 
-  /**
-   * FASE 1: Login com credenciais
-   */
+
  // 1. Mude o retorno para Observable<AuthResponse>
 login(credentials: LoginRequest): Observable<AuthResponse> {
   // 2. Mude o post para <AuthResponse>
@@ -115,6 +113,21 @@ login(credentials: LoginRequest): Observable<AuthResponse> {
     });
 
     this.router.navigate(['/login']);
+  }
+
+  // 1. Pede o QR Code e garante que a resposta terá o formato Setup2FAResponse
+  get2FASetup(): Observable<Setup2FAResponse> {
+    return this.http.post<Setup2FAResponse>(`${this.API_URL}/setup-2fa`, {});
+  }
+
+  // 2. Envia o token e espera uma resposta padrão de sucesso
+  enable2FA(token2fa: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.API_URL}/confirm-2fa`, { token: token2fa });
+  }
+
+  // 3. Desativa e espera uma resposta padrão de sucesso
+ disable2FA(token2fa: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.API_URL}/disable-2fa`, { token: token2fa });
   }
 
   getToken(): string | null {

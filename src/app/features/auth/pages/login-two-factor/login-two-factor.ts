@@ -21,7 +21,6 @@ import { MessageService } from 'primeng/api';
   ],
   templateUrl: './login-two-factor.html',
   styleUrl: './login-two-factor.scss',
-  providers: [MessageService]
 })
 export class LoginTwoFactor implements OnInit {
   // 1. Injeções de dependência modernas
