@@ -86,7 +86,7 @@
           <div class="empresa-card-header">
             <div class="empresa-identity">
               <div class="empresa-logo" [class]="empresa.active ? 'active' : 'inactive'">
-                {{ empresa.code.substring(0, 2) | uppercase }}
+                {{ getIniciais(empresa.name) }}
               </div>
               <div class="empresa-info">
                 <div class="empresa-nome">{{ empresa.name }}</div>
@@ -109,11 +109,11 @@
           <div class="empresa-stats">
             <div class="emp-stat">
               <i class="pi pi-users"></i>
-              <span>0 usuários</span>
+              <span>{{ empresa.usuarios_count || 0 }} usuários</span>
             </div>
             <div class="emp-stat">
               <i class="pi pi-comments"></i>
-              <span>0 consultas/mês</span>
+              <span>{{ empresa.consulta_mes || 0 }} consultas/mês</span>
             </div>
           </div>
 
@@ -124,11 +124,16 @@
             </div>
             <div class="empresa-actions">
               <button class="icon-btn" (click)="editarEmpresa(empresa, $event)" pTooltip="Editar" tooltipPosition="top">
-                <i class="pi pi-pencil"></i>
+                <span class="material-symbols-outlined" style="font-size: 20px; color: #1e293b;">edit</span>
               </button>
+              
               <button class="icon-btn" [class.warning]="empresa.active" (click)="toggleStatus(empresa, $event)"
                 pTooltip="{{ empresa.active ? 'Desativar' : 'Ativar' }}" tooltipPosition="top">
-                <i class="pi" [class.pi-ban]="empresa.active" [class.pi-check-circle]="!empresa.active"></i>
+                <span class="material-symbols-outlined" 
+                      [style.color]="empresa.active ? '#ef4444' : '#22c55e'" 
+                      style="font-size: 20px;">
+                  {{ empresa.active ? 'block' : 'check_circle' }}
+                </span>
               </button>
             </div>
           </div>
@@ -158,7 +163,7 @@
       <div class="detail-card">
         <div class="detail-header">
           <div class="detail-logo" [class]="emp.active ? 'active' : 'inactive'">
-            {{ emp.code.substring(0, 2) | uppercase }}
+            {{ getIniciais(emp.name) }}
           </div>
           <div class="detail-title-group">
             <h2 class="detail-title">{{ emp.name }}</h2>
@@ -180,7 +185,7 @@
         <div class="detail-section">
           <h3 class="section-label">👤 Contato Principal</h3>
           <div class="responsavel-card">
-            <div class="resp-avatar">{{ emp.name.charAt(0) | uppercase }}</div>
+            <div class="resp-avatar">{{ getIniciais(emp.name) }}</div>
             <div class="resp-details">
               <div class="resp-name">{{ emp.name }}</div>
               <div class="resp-contact">{{ emp.email }}</div>

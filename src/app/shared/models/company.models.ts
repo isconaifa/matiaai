@@ -10,6 +10,8 @@ export interface CompanyData {
   plano: string;
   active: boolean;
   created_at?: string;
+  usuarios_count: number;
+  consulta_mes?: number;
 }
 
 export interface AdminData {

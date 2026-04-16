@@ -1,23 +1,30 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth-guard';
+import { adminGuard } from './core/guards/admin-guard';
+import { guestGuard } from './core/guards/guest-guard';
+import { roleGuard } from './core/guards/role-guard';
 
 export const routes: Routes = [
   // Rota inicial → redireciona para login
-  { path: '', redirectTo: 'login-two-factor', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
 
   // Login (Fase 1: Senha)
   {
     path: 'login',
+    canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/pages/login/login').then(m => m.Login)
   },
   // Login 2FA (Fase 2: Código do Celular)
   {
     path: 'login-two-factor',
+    canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/pages/login-two-factor/login-two-factor').then(m => m.LoginTwoFactor)
   },
 
   // Sistema (com layout) - Área Protegida
   {
     path: 'matia',
+    canActivate: [authGuard],
     loadComponent: () => import('./layout/main-layout/main-layout').then(m => m.MainLayout),
     children: [
       // Rota padrão → chat
@@ -29,10 +36,13 @@ export const routes: Routes = [
       },
       {
         path: 'dashboard',
+        canActivate: [roleGuard],
+        data: { roles: ['SUPER-ADMIN', 'ADMIN'] },
         loadComponent: () => import('./features/dashboard/pages/dashboard/dashboard').then(m => m.Dashboard)
       },
       {
         path: 'admin',
+        canActivate: [adminGuard],
         loadComponent: () => import('./features/admin/empresas/pages/empresas/empresas').then(m => m.EmpresasComponent)
       },
       {
@@ -41,6 +51,8 @@ export const routes: Routes = [
       },
       {
         path: 'usuarios',
+        canActivate: [roleGuard],
+        data: { roles: ['SUPER-ADMIN', 'ADMIN'] },
         loadComponent: () => import('./features/usuarios/pages/usuarios/usuarios').then(m => m.Usuarios)
       },
       {

@@ -356,7 +356,6 @@
     color: $gold;
   }
 }
-
 .empresa-actions {
   display: flex;
   gap: 0.5rem;
@@ -365,28 +364,44 @@
     width: 36px;
     height: 36px;
     border-radius: 8px;
-    border: 1px solid $gold-border;
-    background: $white;
+    border: 1px solid #e2e8f0 !important; // Borda cinza clara
+    background: #ffffff !important;        // Fundo branco forçado
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: $navy;
     transition: all 0.2s ease;
+    padding: 0; // Remove paddings extras de botões
     
-    &:hover {
-      border-color: $navy;
-      background: rgba($navy, 0.05);
-    }
-    
-    &.warning:hover {
-      border-color: #dc2626;
-      color: #dc2626;
-      background: rgba(220, 38, 38, 0.05);
-    }
-    
+    // Alvo direto no ícone pi
     i {
       font-size: 1rem;
+      color: #334155 !important; // Cor Navy/Slate escura para o Lápis
+    }
+    
+    &:hover {
+      border-color: #1e293b !important;
+      background: #f8fafc !important;
+      
+      i {
+        color: #0f172a !important;
+      }
+    }
+    
+    // Estilo para o botão de Desativar (Warning)
+    &.warning {
+      i {
+        color: #ef4444 !important; // Ícone de banir fica vermelho
+      }
+
+      &:hover {
+        border-color: #dc2626 !important;
+        background: #fef2f2 !important;
+        
+        i {
+          color: #b91c1c !important;
+        }
+      }
     }
   }
 }
@@ -679,6 +694,22 @@
   }
 }
 
+// Força o PrimeIcons a aparecer e ter cor, ignorando bloqueios globais
+::ng-deep {
+  .empresa-actions {
+    .icon-btn i.pi {
+      display: inline-block !important;
+      visibility: visible !important;
+      color: #1e293b !important; // Cor Navy escura
+      font-family: 'primeicons' !important;
+    }
+
+    .icon-btn.warning i.pi {
+      color: #ef4444 !important; // Vermelho para o botão de status
+    }
+  }
+}
+
 .modal-body {
   padding: 1.5rem;
   overflow-y: auto;
@@ -884,3 +915,4 @@
     }
   }
 }
+
