@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { 
   UserProfile,
@@ -17,7 +18,7 @@ export class UserService {
   private http = inject(HttpClient);
 
   // Base URL do backend
-  private readonly API_URL = 'http://localhost:3002/api/profile';
+  private readonly API_URL = `${environment.apiUrl}/api/profile`;
 
   
   //Busca os dados completos do usuário logado

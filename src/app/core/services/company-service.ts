@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../environments/environment.development';
+import { environment } from '../../../environments/environment';
 // Import de modelos
 import { RegisterCompanyRequest, RegisterCompanyResponse, CompanyData } from '../../shared/models/company.models';
 

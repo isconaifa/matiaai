@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
+import { environment } from '../../../environments/environment';
 import { LoginRequest, LoginResponse, AuthResponse, Setup2FAResponse, ApiResponse } from '../../shared/models/auth.models';
 import { UserPayload } from '../../shared/models/user.models';
 
@@ -14,7 +15,7 @@ export class AuthService {
   private router = inject(Router);
   private messageService = inject(MessageService);
 
-  private readonly API_URL = 'http://localhost:3002/api/auth';
+  private readonly API_URL = `${environment.apiUrl}/api/auth`;
 
   // Signals de estado
   currentUser = signal<UserPayload | null>(null);
