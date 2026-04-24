@@ -1,9 +1,8 @@
 @use 'variables' as *;
 
-// Definições de cores (Mantendo seu Navy Deep)
-$color-bg-dark: #00122e;      
-$color-gold: #fec601;         
-$color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
+$color-bg-dark: #00122e;
+$color-gold: #fec601;
+$color-navy-text: #00296b;
 
 .secure-page-single {
   min-height: 100vh;
@@ -34,7 +33,7 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
 
 .brand-section {
   margin-bottom: 2.5rem;
-  
+
   .brand-title {
     font-family: $font-display;
     font-size: 4.5rem;
@@ -73,7 +72,7 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
 
 .card-header {
   margin-bottom: 2.5rem;
-  
+
   .header-mark {
     width: 44px;
     height: 44px;
@@ -89,7 +88,7 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
 
   .card-title {
     font-size: 1.8rem;
-    color: $color-navy-text; // ✅ Título está nesta cor
+    color: $color-navy-text;
     font-weight: 700;
     margin: 0;
   }
@@ -100,17 +99,15 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
   }
 }
 
-/* 🚀 BOTÃO CONFIRMAR (Label em Azul Escuro) */
 :host ::ng-deep .btn-secure.p-button {
   background: $color-gold !important;
   border: none !important;
   padding: 1.2rem !important;
   border-radius: 12px !important;
   box-shadow: 0 4px 14px rgba($color-gold, 0.3) !important;
-  
-  // 🔥 Forçando o Label a ter a mesma cor do título
+
   .p-button-label {
-    color: $color-navy-text !important; 
+    color: $color-navy-text !important;
     font-weight: 800 !important;
     font-size: 1rem !important;
     letter-spacing: 0.05em !important;
@@ -122,11 +119,9 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
   }
 }
 
-/* 🔗 BOTÃO RETORNAR (Label em Azul Escuro sobre fundo branco/claro do card) */
 :host ::ng-deep .btn-text-secure.p-button {
   margin-top: 1.2rem;
-  
-  // 🔥 Forçando o Label a ter a mesma cor do título
+
   .p-button-label {
     color: $color-navy-text !important;
     font-weight: 700 !important;
@@ -142,7 +137,19 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
   }
 }
 
-/* 💎 INPUT OTP */
+// ═══════════════════════════════════════════════════════════════
+// CONTAINER DO OTP — ESSENCIAL PARA RESPONSIVIDADE
+// ═══════════════════════════════════════════════════════════════
+
+:host ::ng-deep .p-inputotp {
+  display: flex !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
 :host ::ng-deep .p-inputotp-input {
   background: #f8fafc !important;
   color: $color-navy-text !important;
@@ -152,6 +159,7 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
   height: 4.8rem !important;
   font-size: 2rem !important;
   font-weight: 800 !important;
+  flex-shrink: 0 !important;
 
   &:focus {
     border-color: $color-gold !important;
@@ -164,4 +172,176 @@ $color-navy-text: #00296b;    // 🔥 A cor do seu título "Token de Segurança"
   color: rgba(255, 255, 255, 0.5);
   font-size: 0.95rem;
   line-height: 1.6;
+}
+
+// ── RESPONSIVO ─────────────────────────────────────────
+
+// Large desktops (1440px+)
+@media (min-width: 1440px) {
+  .content-container { max-width: 520px; }
+
+  .brand-section .brand-title { font-size: 5.2rem; }
+
+  .secure-card { padding: 4rem 3.4rem; }
+
+  .card-header .card-title { font-size: 2rem; }
+}
+
+// Notebooks / tablets landscape (1024px – 1279px)
+@media (max-width: 1279px) {
+  .brand-section .brand-title { font-size: 4rem; }
+
+  .secure-card { padding: 3rem 2.4rem; }
+
+  .card-header .card-title { font-size: 1.65rem; }
+}
+
+// Tablets portrait (768px – 1023px)
+@media (max-width: 1023px) {
+  .secure-page-single { padding: 1.5rem; }
+
+  .content-container { max-width: 440px; }
+
+  .brand-section {
+    margin-bottom: 2rem;
+
+    .brand-title { font-size: 3.6rem; }
+  }
+
+  .secure-card { padding: 2.8rem 2.2rem; border-radius: 20px; }
+
+  .card-header {
+    margin-bottom: 2rem;
+
+    .card-title { font-size: 1.55rem; }
+    .eyebrow    { font-size: 0.95rem; }
+  }
+
+  :host ::ng-deep .p-inputotp-input {
+    width: 3.2rem !important;
+    height: 4.2rem !important;
+    font-size: 1.75rem !important;
+  }
+}
+
+// Mobile landscape / tablets pequenos (481px – 767px)
+@media (max-width: 767px) {
+  .secure-page-single { padding: 1.25rem; align-items: flex-start; padding-top: 2.5rem; }
+
+  .content-container { max-width: 100%; }
+
+  .brand-section {
+    margin-bottom: 1.75rem;
+
+    .brand-title { font-size: 3.2rem; letter-spacing: 0.1em; }
+
+    .security-badge { padding: 5px 14px; }
+  }
+
+  .secure-card {
+    padding: 2.4rem 1.8rem;
+    border-radius: 18px;
+  }
+
+  .card-header {
+    margin-bottom: 1.75rem;
+
+    .header-mark { width: 40px; height: 40px; }
+    .card-title  { font-size: 1.45rem; }
+    .eyebrow     { font-size: 0.9rem; }
+  }
+
+  :host ::ng-deep .p-inputotp {
+    gap: 0.4rem !important;
+  }
+
+  :host ::ng-deep .p-inputotp-input {
+    width: 2.8rem !important;
+    height: 3.8rem !important;
+    font-size: 1.5rem !important;
+    border-radius: 10px !important;
+  }
+
+  :host ::ng-deep .btn-secure.p-button {
+    padding: 1rem !important;
+  }
+
+  .instruction-text { font-size: 0.88rem; margin-top: 2rem; }
+}
+
+// Mobile portrait (até 480px)
+@media (max-width: 480px) {
+  .secure-page-single { padding: 1rem; padding-top: 2rem; }
+
+  .brand-section {
+    margin-bottom: 1.5rem;
+
+    .brand-title { font-size: 2.8rem; letter-spacing: 0.08em; }
+
+    .security-badge {
+      padding: 4px 12px;
+      gap: 6px;
+
+      .status-text { font-size: 0.7rem; }
+    }
+  }
+
+  .secure-card {
+    padding: 2rem 1.4rem;
+    border-radius: 16px;
+  }
+
+  .card-header {
+    margin-bottom: 1.5rem;
+
+    .header-mark  { width: 36px; height: 36px; border-radius: 8px; margin-bottom: 1rem; }
+    .card-title   { font-size: 1.3rem; }
+    .eyebrow      { font-size: 0.85rem; }
+  }
+
+  :host ::ng-deep .p-inputotp {
+    gap: 0.35rem !important;
+  }
+
+  :host ::ng-deep .p-inputotp-input {
+    width: 2.4rem !important;
+    height: 3.4rem !important;
+    font-size: 1.3rem !important;
+    border-radius: 8px !important;
+  }
+
+  :host ::ng-deep .btn-secure.p-button {
+    padding: 0.95rem !important;
+
+    .p-button-label { font-size: 0.95rem !important; }
+  }
+
+  :host ::ng-deep .btn-text-secure.p-button {
+    margin-top: 0.9rem;
+
+    .p-button-label { font-size: 0.88rem !important; }
+  }
+
+  .instruction-text { font-size: 0.82rem; margin-top: 1.75rem; }
+}
+
+// Mobile muito pequeno (até 360px — ex: Galaxy S8)
+@media (max-width: 360px) {
+  .brand-section .brand-title { font-size: 2.4rem; }
+
+  .secure-card { padding: 1.6rem 1.2rem; }
+
+  .card-header .card-title { font-size: 1.2rem; }
+
+  :host ::ng-deep .p-inputotp {
+    gap: 0.3rem !important;
+  }
+
+  :host ::ng-deep .p-inputotp-input {
+    width: 2.1rem !important;
+    height: 3rem !important;
+    font-size: 1.1rem !important;
+    border-radius: 6px !important;
+    border-width: 1.5px !important;
+  }
 }

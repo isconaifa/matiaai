@@ -1,0 +1,57 @@
+@use 'variables' as *;
+
+.subscription-container {
+  font-family: $font-body;
+  background-color: $cream;
+  min-height: 100vh;
+}
+
+.display-title {
+  font-family: $font-display;
+  color: $navy-deep;
+}
+
+.card-custom {
+  background: $white;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  
+  &.featured {
+    border: 2px solid $gold;
+    box-shadow: 0 10px 25px $gold-glow;
+    transform: scale(1.03);
+    
+    .price-text {
+      color: $navy-mid;
+    }
+  }
+
+  .plan-header {
+    background: $gradient-navy;
+    color: $white;
+    padding: 2rem;
+    border-radius: 10px 10px 0 0;
+    
+    &.gold-header {
+      background: $gradient-gold;
+      color: $navy-deep;
+    }
+  }
+}
+
+.btn-gold {
+  background: $gradient-gold !important;
+  border: none !important;
+  color: $navy-deep !important;
+  font-weight: 600 !important;
+  
+  &:hover {
+    box-shadow: 0 4px 12px $gold-border !important;
+  }
+}
+
+.btn-navy {
+  background: $gradient-navy !important;
+  border: none !important;
+  color: $white !important;
+}

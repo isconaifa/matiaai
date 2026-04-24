@@ -48,7 +48,7 @@
 }
 
 .robot-icon {
-  width: 140px;   // ligeiramente maior que o original (era 120px)
+  width: 140px;
   height: auto;
   margin-bottom: 28px;
   filter: drop-shadow(0 0 30px rgba(254, 198, 1, 0.4));
@@ -57,7 +57,7 @@
 
 .brand-title {
   font-family: $font-display;
-  font-size: 6.5rem;   // maior, fiel ao Figma
+  font-size: 6.5rem;
   font-weight: 600;
   letter-spacing: 0.12em;
   line-height: 1;
@@ -68,7 +68,6 @@
   background-clip: text;
 }
 
-// Underline curvado (swash) abaixo do título
 .brand-underline {
   width: 300px;
   margin: 6px auto 20px;
@@ -80,11 +79,11 @@
 }
 
 .brand-tagline {
-  font-size: 1.25rem;;        // maior que antes (era 0.72rem)
+  font-size: 1.25rem;
   font-weight: 300;
-  letter-spacing: 0.04em;   // menos espaçamento que antes
+  letter-spacing: 0.04em;
   color: white;
-  text-transform: none;      // sem uppercase — fiel ao Figma
+  text-transform: none;
   line-height: 1.7;
 }
 
@@ -114,23 +113,21 @@
   margin-bottom: 40px;
 }
 
-// Título principal — azul escuro, Barlow bold (fiel ao Figma)
 .card-title {
   font-family: $font-body;
   font-size: 2rem;
   font-weight: 700;
-  color: $navy-deep;         // #00296B
+  color: $navy-deep;
   letter-spacing: 0.01em;
   margin: 0 0 6px 0;
 }
 
-// Subtítulo abaixo do título (ordem invertida em relação ao código original)
 .eyebrow {
   display: block;
   font-size: 1.25rem;
   letter-spacing: 0.06em;
-  text-transform: none;      // sem uppercase — fiel ao Figma
-  color: $text-gray;         // #6B7280
+  text-transform: none;
+  color: $text-gray;
   font-weight: 400;
 }
 
@@ -166,10 +163,10 @@
   }
 }
 
-// Wrap específico para campo de senha (ícone de olho)
 .password-wrap {
   position: relative;
   width: 100%;
+
   .toggle-password {
     position: absolute;
     right: 14px;
@@ -197,6 +194,7 @@
     }
   }
 }
+
 :host ::ng-deep p-password,
 :host ::ng-deep p-password > div {
   width: 100% !important;
@@ -216,7 +214,6 @@
   letter-spacing: 0.02em !important;
   transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
 
-  // padding extra direito no campo senha (espaço pro ícone do olho)
   .password-wrap & {
     padding-right: 44px !important;
   }
@@ -236,7 +233,7 @@
   display: flex;
   justify-content: flex-end;
   margin-top: -4px;
-  margin-bottom: 32px;   // mais espaço abaixo — fiel ao Figma
+  margin-bottom: 32px;
 }
 
 .forgot-btn.p-button.p-button-text {
@@ -293,7 +290,6 @@
     white-space: nowrap;
   }
 
-  // Linhas douradas — fiel ao Figma (eram cinzas)
   &::before, &::after {
     content: '';
     flex: 1;
@@ -323,7 +319,7 @@
   font-size: 0.9rem !important;
   font-weight: 600 !important;
   letter-spacing: 0.04em !important;
-  color: $navy-deep !important;   // azul escuro — fiel ao Figma
+  color: $navy-deep !important;
   padding: 14px !important;
   transition: background 0.3s ease, box-shadow 0.3s ease !important;
 
@@ -345,11 +341,134 @@
 }
 
 // ── RESPONSIVO ─────────────────────────────────────────
-@media (max-width: 768px) {
-  .login-wrapper { flex-direction: column; overflow: auto; }
-  .left-panel { width: 100%; padding: 56px 24px 40px; min-height: 40vh; }
-  .right-panel { width: 100%; padding: 0 0 60px; }
-  .brand-title { font-size: 4.5rem; }
+
+// Large desktops (1440px+): aumenta levemente o painel esquerdo
+@media (min-width: 1440px) {
+  .brand-title { font-size: 7.5rem; }
+  .robot-icon  { width: 160px; }
+  .brand-underline { width: 340px; }
+  .login-card  { max-width: 480px; padding: 60px 56px; }
+}
+
+// Notebooks / tablets landscape (1024px – 1279px)
+@media (max-width: 1279px) {
+  .left-panel  { width: 42%; }
+  .right-panel { width: 58%; }
+  .brand-title { font-size: 5.5rem; }
+  .brand-underline { width: 260px; }
+  .login-card  { padding: 48px 40px; }
+  .card-title  { font-size: 1.8rem; }
+  .eyebrow     { font-size: 1.1rem; }
+}
+
+// Tablets portrait / small laptops (768px – 1023px)
+@media (max-width: 1023px) {
+  .left-panel  { width: 40%; padding: 0 24px; }
+  .right-panel { width: 60%; }
+  .brand-title { font-size: 4.8rem; }
+  .robot-icon  { width: 110px; margin-bottom: 20px; }
+  .brand-underline { width: 230px; }
+  .brand-tagline { font-size: 1.1rem; }
+  .login-card  { padding: 44px 32px; }
+  .card-title  { font-size: 1.7rem; }
+  .eyebrow     { font-size: 1rem; }
+  .card-header { margin-bottom: 32px; }
+}
+
+// Mobile landscape e tablets pequenos (481px – 767px)
+@media (max-width: 767px) {
+  .login-wrapper {
+    flex-direction: column;
+    overflow: auto;
+  }
+
+  .left-panel {
+    width: 100%;
+    padding: 48px 24px 36px;
+    min-height: 38vh;
+  }
+
+  .right-panel {
+    width: 100%;
+    padding: 0 0 56px;
+  }
+
+  .brand-title     { font-size: 4.5rem; }
   .brand-underline { width: 220px; }
-  .login-card { padding: 40px 28px; }
+  .brand-tagline   { font-size: 1.05rem; }
+  .robot-icon      { width: 100px; margin-bottom: 16px; }
+
+  .login-card {
+    padding: 36px 28px;
+    max-width: 100%;
+  }
+
+  .card-title  { font-size: 1.6rem; }
+  .eyebrow     { font-size: 0.95rem; }
+  .card-header { margin-bottom: 28px; }
+
+  .forgot-btn.p-button.p-button-text {
+    font-size: 0.9rem !important;
+  }
+}
+
+// Mobile portrait (até 480px)
+@media (max-width: 480px) {
+  .left-panel {
+    padding: 40px 20px 28px;
+    min-height: 32vh;
+  }
+
+  .right-panel {
+    padding: 0 0 48px;
+  }
+
+  .brand-title     { font-size: 3.8rem; letter-spacing: 0.08em; }
+  .brand-underline { width: 190px; }
+  .brand-tagline   { font-size: 0.95rem; }
+  .robot-icon      { width: 84px; margin-bottom: 14px; }
+
+  .login-card {
+    padding: 28px 20px;
+  }
+
+  .card-title  { font-size: 1.45rem; }
+  .eyebrow     { font-size: 0.88rem; }
+  .card-header { margin-bottom: 24px; }
+
+  .field       { margin-bottom: 16px; }
+
+  .forgot-row  { margin-bottom: 24px; }
+
+  .custom-input.p-inputtext {
+    font-size: 0.875rem !important;
+    padding: 12px 14px 12px 40px !important;
+  }
+
+  :host ::ng-deep .btn-login.p-button {
+    font-size: 0.95rem !important;
+    padding: 13px !important;
+    margin-bottom: 20px;
+  }
+
+  :host ::ng-deep .btn-register.p-button {
+    font-size: 0.85rem !important;
+    padding: 12px !important;
+  }
+
+  .divider {
+    margin-bottom: 18px;
+    gap: 12px;
+
+    span { font-size: 0.78rem; }
+  }
+}
+
+// Mobile muito pequeno (até 360px — ex: Galaxy S8)
+@media (max-width: 360px) {
+  .brand-title  { font-size: 3.2rem; }
+  .robot-icon   { width: 72px; }
+  .login-card   { padding: 24px 16px; }
+  .card-title   { font-size: 1.3rem; }
+  .eyebrow      { font-size: 0.82rem; }
 }

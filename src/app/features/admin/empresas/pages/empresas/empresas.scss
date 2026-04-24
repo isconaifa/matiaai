@@ -916,3 +916,37 @@
   }
 }
 
+/* =========================
+   FIX MOBILE (NÃO INTRUSIVO)
+========================= */
+
+@media (max-width: 1200px) {
+
+  /* Layout vira coluna */
+  .main-layout {
+    flex-direction: column;
+    overflow: visible;
+  }
+
+  /* Permite scroll */
+  .empresas-page {
+    overflow-y: auto;
+  }
+
+  .list-col {
+    overflow: visible;
+  }
+
+  /* 🔥 MOSTRA O DETAIL NO MOBILE */
+  .detail-col {
+    display: block !important;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  /* 🔥 REMOVE sticky que quebra layout */
+  .detail-card {
+    position: relative;
+    top: unset;
+  }
+}

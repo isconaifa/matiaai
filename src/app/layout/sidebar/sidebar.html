@@ -2,7 +2,7 @@
 
   <!-- BUSCA -->
   <div class="sidebar-search">
-    <i class="pi pi-search sidebar-search-icon"></i>
+    <span class="material-symbols-outlined sidebar-search-icon">search</span>
     <input pInputText type="text" placeholder="Buscar consultas antigas..." class="sidebar-search-input"/>
   </div>
 
@@ -12,56 +12,61 @@
     <ul class="sidebar-menu">
       <li>
         <a routerLink="/matia/chat" routerLinkActive="active" class="sidebar-item">
-          <i class="pi pi-comments"></i>
+          <span class="material-symbols-outlined">chat</span>
           <span>Matia Chat</span>
         </a>
       </li>
       <li>
         <a routerLink="/matia/dashboard" routerLinkActive="active" class="sidebar-item">
-          <i class="pi pi-chart-bar"></i>
+          <span class="material-symbols-outlined">dashboard</span>
           <span>Dashboard</span>
         </a>
       </li>
       <li>
         <a routerLink="/matia/consulta-juridica" routerLinkActive="active" class="sidebar-item">
-          <i class="pi pi-book"></i>
+          <span class="material-symbols-outlined">menu_book</span>
           <span>Consulta Jurídica</span>
         </a>
       </li>
       <li>
         <a routerLink="/matia/usuarios" routerLinkActive="active" class="sidebar-item">
-          <i class="pi pi-users"></i>
+          <span class="material-symbols-outlined">group</span>
           <span>Usuários</span>
         </a>
       </li>
       <li>
         <a routerLink="/matia/llm-config" routerLinkActive="active" class="sidebar-item">
-          <i class="pi pi-microchip-ai"></i>
+          <span class="material-symbols-outlined">memory</span>
           <span>Config. LLMs</span>
         </a>
       </li>
     </ul>
   </div>
 
-  <!-- ADMINISTRAÇÃO (SaaS) -->
+  <!-- ADMINISTRAÇÃO -->
   <div class="sidebar-section">
     <span class="sidebar-section-title">⚙️ Administração</span>
     <ul class="sidebar-menu">
+
+    @if (isAdmin()) {
       <li>
-        <a routerLink="/matia/admin" routerLinkActive="active" class="sidebar-item">
-          <i class="pi pi-building"></i>
+        <a routerLink="/matia/admin"
+           routerLinkActive="active"
+           class="sidebar-item">
+
+          <span class="material-symbols-outlined">apartment</span>
           <span>Empresas</span>
         </a>
       </li>
-      <li>
-        
-    </ul>
+    }
+
+  </ul>
   </div>
 
   <!-- RECENTES -->
   <div class="sidebar-section sidebar-scrollable">
     <span class="sidebar-section-title">
-      <i class="pi pi-history"></i> Recentes
+      <span class="material-symbols-outlined">history</span> Recentes
     </span>
     <ul class="sidebar-menu">
       @for (item of recentes; track item.id) {
@@ -71,7 +76,12 @@
               <span class="recent-title">{{ item.titulo }}</span>
               <span class="recent-time">{{ item.tempo }}</span>
             </div>
-            <i class="pi" [class.pi-star-fill]="item.favorito" [class.pi-star]="!item.favorito" class="recent-star" [class.starred]="item.favorito"></i>
+
+            <span class="material-symbols-outlined recent-star"
+              [class.starred]="item.favorito">
+              {{ item.favorito ? 'star' : 'star_border' }}
+            </span>
+
           </a>
         </li>
       }
@@ -81,7 +91,7 @@
   <!-- FAVORITOS -->
   <div class="sidebar-section sidebar-scrollable">
     <span class="sidebar-section-title">
-      <i class="pi pi-star-fill"></i> Favoritos
+      <span class="material-symbols-outlined">star</span> Favoritos
     </span>
     <ul class="sidebar-menu">
       @for (item of favoritos; track item.id) {
@@ -91,7 +101,11 @@
               <span class="recent-title">{{ item.titulo }}</span>
               <span class="recent-time">{{ item.tempo }}</span>
             </div>
-            <i class="pi pi-star-fill recent-star starred"></i>
+
+            <span class="material-symbols-outlined recent-star starred">
+              star
+            </span>
+
           </a>
         </li>
       }
@@ -101,11 +115,11 @@
   <!-- RODAPÉ -->
   <div class="sidebar-footer">
     <a routerLink="/matia/perfil" routerLinkActive="active" class="sidebar-item">
-      <i class="pi pi-user"></i>
+      <span class="material-symbols-outlined">person</span>
       <span>Perfil</span>
     </a>
     <a class="sidebar-item sidebar-item-logout" (click)="logout()">
-      <i class="pi pi-sign-out"></i>
+      <span class="material-symbols-outlined">logout</span>
       <span>Sair</span>
     </a>
   </div>

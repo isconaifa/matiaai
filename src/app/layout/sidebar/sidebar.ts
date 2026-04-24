@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Output, EventEmitter } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../core/services/auth.service';
@@ -17,6 +17,7 @@ interface ConsultaRecente {
   styleUrl: './sidebar.scss',
 })
 export class Sidebar {
+  @Output() close = new EventEmitter<void>();
 
   private authService = inject(AuthService)
 
@@ -30,6 +31,14 @@ export class Sidebar {
     { id: 1, titulo: 'Recurso Especial - Direito Tributário', tempo: '1 dia atrás', favorito: true },
     { id: 2, titulo: 'Parecer Jurídico - Licitação', tempo: '3 dias atrás', favorito: true },
   ];
+
+  onNavigate() {
+  this.close.emit();
+}
+
+isAdmin(): boolean {
+  return this.authService.currentUser()?.role === 'SUPER-ADMIN';
+}
 
   logout() {
     this.authService.logout();

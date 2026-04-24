@@ -22,6 +22,12 @@
 .main-sidebar {
   flex-shrink: 0;
   width: 260px;
+
+  /* MÁGICA DA RESPONSIVIDADE AQUI: 
+     Esconde o sidebar fixo em telas menores que 992px (tablets e celulares) */
+  @media screen and (max-width: 992px) {
+    display: none;
+  }
 }
 
 .main-content {
@@ -36,7 +42,11 @@
   overflow-y: auto;
   padding: 28px;
   background-color: $cream;
-   
+  
+  /* Ajuste bônus: diminui o padding no mobile para o chat ter mais espaço */
+  @media screen and (max-width: 992px) {
+    padding: 16px;
+  }
 
   &::-webkit-scrollbar { width: 5px; }
   &::-webkit-scrollbar-track { background: transparent; }

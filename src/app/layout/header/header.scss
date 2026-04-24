@@ -9,6 +9,14 @@
   box-shadow: 0 2px 16px rgba(0, 0, 0, 0.3) !important;
 }
 
+/* AJUSTE NO p-toolbar-group-start
+  Adicionado para garantir que o botão e a logo fiquem alinhados 
+*/
+.p-toolbar-group-start {
+  display: flex;
+  align-items: center;
+}
+
 .brand-group {
   display: flex;
   align-items: center;
@@ -143,14 +151,66 @@
   }
 }
 
+/* ========================================================================= */
+/* REGRAS DO BOTÃO HAMBÚRGUER                      */
+/* ========================================================================= */
+
+/* Esconde o botão de menu por padrão (em telas grandes como o Desktop) */
+:host ::ng-deep .mobile-menu-btn {
+  display: none !important;
+}
+
+/* ========================================================================= */
+/* MEDIA QUERIES GERAIS                            */
+/* ========================================================================= */
+
+/* Tablet em diante */
+@media (max-width: 992px) {
+  /* Mostra o botão hambúrguer */
+  :host ::ng-deep .mobile-menu-btn {
+    display: inline-flex !important;
+    margin-right: 8px; /* Dá um espacinho entre o botão e a logo */
+  }
+
+  /* Ajusta o espaçamento do toolbar no mobile para não ficar tão apertado */
+  :host ::ng-deep .matia-toolbar.p-toolbar {
+    padding: 8px 12px !important;
+  }
+}
+
+/* Telas de tablet menores */
 @media (max-width: 768px) {
   .search-wrap {
     width: 180px;
   }
 }
 
+/* Celulares */
 @media (max-width: 480px) {
   .search-wrap {
     display: none;
   }
+  
+  /* Diminui a logo e a fonte da marca no celular para caber o botão melhor */
+  .logo-circle {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .brand-name {
+    font-size: 1.2rem;
+  }
+}
+
+/* Ícone do menu hambúrguer */
+:host ::ng-deep .mobile-menu-btn .material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+  font-size: 26px;
+  color: $cream;
+  transition: color 0.3s ease;
+}
+
+/* Hover igual padrão dourado do sistema */
+:host ::ng-deep .mobile-menu-btn:hover .material-symbols-outlined {
+  color: $gold;
 }

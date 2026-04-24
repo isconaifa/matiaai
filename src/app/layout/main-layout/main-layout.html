@@ -1,14 +1,27 @@
 <div class="main-wrapper">
-  <app-header class="main-header"></app-header>
 
+  <!-- HEADER -->
+  <app-header 
+    class="main-header" 
+    (toggleMenu)="sidebarVisible = true">
+  </app-header>
+
+  <!-- DRAWER (mobile) -->
+  <p-drawer [(visible)]="sidebarVisible" [style]="{width: '280px'}">
+    <app-sidebar></app-sidebar>
+  </p-drawer>
+
+  <!-- BODY -->
   <div class="main-body">
+
+    <!-- SIDEBAR FIXA (desktop) -->
     <app-sidebar class="main-sidebar hidden lg:block"></app-sidebar>
 
     <div class="main-content">
       <main class="main-outlet">
         <router-outlet></router-outlet>
       </main>
-      <!-- <app-footer></app-footer> -->
     </div>
+
   </div>
 </div>

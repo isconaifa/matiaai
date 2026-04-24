@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Output, EventEmitter } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
 import { AvatarModule } from 'primeng/avatar';
@@ -16,6 +16,8 @@ export class Header {
 
   authService = inject(AuthService);
   user = this.authService.currentUser;
+
+  @Output() toggleMenu = new EventEmitter<void>();
 
  
 
