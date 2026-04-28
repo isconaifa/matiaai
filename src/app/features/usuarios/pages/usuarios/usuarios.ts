@@ -7,6 +7,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputMaskModule } from 'primeng/inputmask';
 import { MessageService, ConfirmationService } from 'primeng/api';
+import { CompanyService } from '../../../../core/services/company-service';
 import { ProfileService } from '../../../../core/services/profile-service';
 import { ProfileData, CreateProfilePayload } from '../../../../shared/models/profile.model';
 
@@ -27,12 +28,14 @@ import { ProfileData, CreateProfilePayload } from '../../../../shared/models/pro
 export class Usuarios {
   //Injetamos as dependências do service e messageService
   private _profileService = inject(ProfileService);
+  private _companyService = inject(CompanyService);
   private messageService = inject(MessageService);
   private confirmationService = inject(ConfirmationService);
 
 
   // Gerenciamento de Estado (Signals)
   perfis = signal<ProfileData[]>([]);
+  empresasList = signal<any[]>([]);
   filteredUsers = signal<ProfileData[]>([]);
   selectedUser = signal<ProfileData | null>(null);
   modalAberto = signal(false);
@@ -51,6 +54,7 @@ export class Usuarios {
 
   ngOnInit() {
     this.carregarPerfis();
+    this.carregarEmpresas();
   }
 
   // ==========================================
@@ -74,6 +78,25 @@ export class Usuarios {
     });
   }
 
+  carregarEmpresas() {
+    this._companyService.getCompanies().subscribe({
+      next: (res: any) => {
+        const dados = Array.isArray(res) ? res : (res.data || []);
+        this.empresasList.set(dados);
+      }
+    });
+  }
+
+  getNomeEmpresa(empresaId?: string): string {
+    if (!empresaId) return 'Não informada';
+    
+    // Procura na lista a empresa que tem o mesmo ID
+    const empresaEncontrada = this.empresasList().find(e => e.id === empresaId);
+    
+    // Retorna o nome se achar, se não achar retorna um aviso (ajuste .name ou .nome conforme seu model)
+    return empresaEncontrada ? empresaEncontrada.name : 'Empresa não encontrada'; 
+  }
+
   salvarCadastro() {
     // 1. Validação Básica
     if (!this.novoProfile.nome || !this.novoProfile.email || !this.novoProfile.profile_password) {
@@ -90,6 +113,8 @@ export class Usuarios {
         dataFormatada = `${partes[2]}-${partes[1]}-${partes[0]}`;
       }
     }
+
+    //
 
     // 3. Montar o Payload Limpo apenas com os campos obrigatórios
     const payload: any = {

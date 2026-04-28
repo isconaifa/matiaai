@@ -162,7 +162,7 @@ getIniciais(nome?: string): string {
     const novoStatus = !empresa.active;
     this._companyService.updateCompany(empresa.id!, { active: novoStatus }).subscribe({
       next: () => {
-        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Status atualizado' });
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Status atualizado com sucesso!' });
         this.carregarEmpresas();
       }
     });
@@ -175,12 +175,30 @@ getIniciais(nome?: string): string {
       message: 'Tem certeza que deseja excluir esta empresa? Todos os dados serão perdidos.',
       acceptLabel: 'Sim, excluir',
       rejectLabel: 'Cancelar',
+      
+      acceptButtonStyleClass: 'p-button-danger', 
+      rejectButtonStyleClass: 'p-button-text p-button-secondary',
+      
       accept: () => {
         this._companyService.deleteCompany(id).subscribe({
           next: () => {
-            this.messageService.add({ severity: 'success', summary: 'Excluído', detail: 'Empresa removida' });
+            // Mensagem de sucesso atualizada!
+            this.messageService.add({ 
+              severity: 'success', 
+              summary: 'Sucesso!', 
+              detail: 'Empresa excluída com sucesso!' 
+            });
+            
             this.carregarEmpresas();
             this.selectedEmpresa.set(null);
+          },
+          error: (err) => {
+            // Adicionado o Toast de erro para quando algo der errado no backend
+            this.messageService.add({ 
+              severity: 'error', 
+              summary: 'Erro', 
+              detail: 'Não foi possível excluir a empresa' 
+            });
           }
         });
       }
@@ -192,7 +210,7 @@ getIniciais(nome?: string): string {
       // ✏️ Atualização
       this._companyService.updateCompany(this.novaEmpresa.id!, this.novaEmpresa).subscribe({
         next: () => { 
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa atualizada' });
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa atualizada com sucesso!' });
           this.fecharModal(); 
           this.carregarEmpresas(); 
         }
@@ -210,7 +228,7 @@ getIniciais(nome?: string): string {
       };
       this._companyService.registerCompany(payload).subscribe({
         next: () => { 
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa cadastrada!' });
+          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa cadastrada com sucesso!' });
           this.fecharModal(); 
           this.carregarEmpresas(); 
         }

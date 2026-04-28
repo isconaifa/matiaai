@@ -5,23 +5,14 @@
       <h1 class="page-title">👥 Gestão de Perfis</h1>
       <p class="page-sub">Gerencie acessos e permissões do sistema MATIA</p>
     </div>
-    <p-button
-      label="Novo Usuário"
-      icon="pi pi-plus"
-      styleClass="btn-primary"
-      (onClick)="abrirModal()"/>
+    <p-button label="Novo Usuário" icon="pi pi-plus" styleClass="btn-primary" (onClick)="abrirModal()" />
   </div>
 
   <div class="filters-bar">
     <div class="search-wrap">
       <i class="pi pi-search search-icon"></i>
-      <input
-        pInputText
-        type="text"
-        placeholder="Buscar por nome ou e-mail..."
-        class="search-input"
-        [(ngModel)]="searchTerm"
-        (input)="aplicarFiltros()"/>
+      <input pInputText type="text" placeholder="Buscar por nome ou e-mail..." class="search-input"
+        [(ngModel)]="searchTerm" (input)="aplicarFiltros()" />
     </div>
     <select class="filter-select" [(ngModel)]="perfilFilter" (change)="aplicarFiltros()">
       <option value="">Todos os perfis</option>
@@ -43,13 +34,15 @@
           <span class="dot"></span>
           Usuários Cadastrados
         </div>
-        <span class="table-count">{{ filteredUsers().length }} usuário{{ filteredUsers().length !== 1 ? 's' : '' }}</span>
+        <span class="table-count">{{ filteredUsers().length }} usuário{{ filteredUsers().length !== 1 ? 's' : ''
+          }}</span>
       </div>
       <table class="users-table">
         <thead>
           <tr>
             <th>Usuário</th>
             <th>Perfil</th>
+            <th>Empresa</th>
             <th>Área Jurídica</th>
             <th>Status</th>
             <th></th>
@@ -57,30 +50,34 @@
         </thead>
         <tbody>
           @for (u of filteredUsers(); track u.id) {
-            <tr [class.selected]="u.id === selectedId()" (click)="selecionarUsuario(u)">
-              <td>
-                <div class="user-cell">
-                  <div class="avatar">{{ iniciais(u.nome) }}</div>
-                  <div>
-                    <div class="user-name">{{ u.nome }}</div>
-                    <div class="user-email">{{ u.email }}</div>
-                  </div>
+          <tr [class.selected]="u.id === selectedId()" (click)="selecionarUsuario(u)">
+            <td>
+              <div class="user-cell">
+                <div class="avatar">{{ iniciais(u.nome) }}</div>
+                <div>
+                  <div class="user-name">{{ u.nome }}</div>
+                  <div class="user-email">{{ u.email }}</div>
                 </div>
-              </td>
-              <td><span class="badge" [class.admin]="u.role === 'ADMIN'" [class.user]="u.role === 'USER'">{{ u.role }}</span></td>
-              <td class="td-muted">{{ u.area_juridica || 'Não informada' }}</td>
-              <td><span class="status-dot" [class]="u.status">{{ u.status === 'ativo' ? 'Ativo' : 'Inativo' }}</span></td>
-              <td>
-                <div class="actions-cell">
-                  <button class="icon-btn" (click)="selecionarUsuario(u); $event.stopPropagation()">
-                    <i class="pi pi-pencil"></i>
-                  </button>
-                  <button class="icon-btn danger" (click)="excluir(u.id); $event.stopPropagation()">
-                    <i class="pi pi-trash"></i>
-                  </button>
-                </div>
-              </td>
-            </tr>
+              </div>
+            </td>
+            <td><span class="badge" [class.admin]="u.role === 'ADMIN'" [class.user]="u.role === 'USER'">{{ u.role
+                }}</span></td>
+            <td class="td-muted">
+              {{ getNomeEmpresa(u.empresa_id) }}
+            </td>
+            <td class="td-muted">{{ u.area_juridica || 'Não informada' }}</td>
+            <td><span class="status-dot" [class]="u.status">{{ u.status === 'ativo' ? 'Ativo' : 'Inativo' }}</span></td>
+            <td>
+              <div class="actions-cell">
+                <button class="icon-btn" (click)="selecionarUsuario(u); $event.stopPropagation()">
+                  <i class="pi pi-pencil"></i>
+                </button>
+                <button class="icon-btn danger" (click)="excluir(u.id); $event.stopPropagation()">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
           }
         </tbody>
       </table>
@@ -92,141 +89,152 @@
       </div>
 
       @if (!selectedUser()) {
-        <div class="empty-panel">
-          <div class="empty-icon">👤</div>
-          <p>Selecione um usuário<br>para ver os detalhes<br>e editar informações</p>
-        </div>
+      <div class="empty-panel">
+        <div class="empty-icon">👤</div>
+        <p>Selecione um usuário<br>para ver os detalhes<br>e editar informações</p>
+      </div>
       }
 
       @if (selectedUser()) {
-        <div class="panel-body">
-          <div class="panel-avatar">{{ iniciais(selectedUser()!.nome) }}</div>
-          <div class="panel-name">{{ selectedUser()!.nome }}</div>
-          <div class="panel-email">{{ selectedUser()!.email }}</div>
-          <div class="panel-status">
-            <span class="status-dot" [class]="selectedUser()!.status">
-              {{ selectedUser()!.status === 'ativo' ? 'Ativo' : 'Inativo' }}
-            </span>
-          </div>
-
-          <div class="panel-divider"></div>
-
-          <div class="field-group">
-            <label class="field-label">Nome Completo</label>
-            <input pInputText type="text" class="field-input" [(ngModel)]="selectedUser()!.nome"/>
-          </div>
-          <div class="field-group">
-            <label class="field-label">E-mail</label>
-            <input pInputText type="email" class="field-input" [(ngModel)]="selectedUser()!.email"/>
-          </div>
-          
-          <div class="field-group">
-            <label class="field-label">CPF</label>
-            <p-inputMask mask="999.999.999-99" [(ngModel)]="selectedUser()!.cpf" styleClass="field-input"></p-inputMask>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Telefone</label>
-            <p-inputMask mask="(99) 99999-9999" [(ngModel)]="selectedUser()!.telefone" styleClass="field-input"></p-inputMask>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Data de Nascimento</label>
-            <p-inputMask mask="99/99/9999" [(ngModel)]="selectedUser()!.data_nascimento" placeholder="DD/MM/AAAA" styleClass="field-input"></p-inputMask>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Perfil de Acesso</label>
-            <select class="field-select" [(ngModel)]="selectedUser()!.role">
-              <option value="ADMIN">Administrador (ADMIN)</option>
-              <option value="USER">Usuário (USER)</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Área Jurídica</label>
-            <input pInputText type="text" class="field-input" [(ngModel)]="selectedUser()!.area_juridica" placeholder="Ex: Tributário"/>
-          </div>
-          <div class="field-group">
-            <label class="field-label">URL do Avatar</label>
-            <input pInputText type="text" class="field-input" [(ngModel)]="selectedUser()!.avatar_url" placeholder="https://..."/>
-          </div>
-
-          <div class="panel-divider"></div>
-
-          <div class="toggle-row">
-            <span class="toggle-label">Usuário Ativo</span>
-            <div class="toggle" [class.on]="selectedUser()!.status === 'ativo'"
-              (click)="alternarStatus()">
-            </div>
-          </div>
-
-          <div class="panel-actions">
-            <p-button label="💾 Salvar Alterações" styleClass="btn-primary" [fluid]="true" (onClick)="salvarEdicao()"/>
-            <p-button label="🗑 Remover Usuário" styleClass="btn-danger" [fluid]="true" [outlined]="true" (onClick)="excluir(selectedUser()!.id)"/>
-          </div>
-
+      <div class="panel-body">
+        <div class="panel-avatar">{{ iniciais(selectedUser()!.nome) }}</div>
+        <div class="panel-name">{{ selectedUser()!.nome }}</div>
+        <div class="panel-email">{{ selectedUser()!.email }}</div>
+        <div class="panel-status">
+          <span class="status-dot" [class]="selectedUser()!.status">
+            {{ selectedUser()!.status === 'ativo' ? 'Ativo' : 'Inativo' }}
+          </span>
         </div>
+
+        <div class="panel-divider"></div>
+
+        <div class="field-group">
+          <label class="field-label">Nome Completo</label>
+          <input pInputText type="text" class="field-input" [(ngModel)]="selectedUser()!.nome" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">E-mail</label>
+          <input pInputText type="email" class="field-input" [(ngModel)]="selectedUser()!.email" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">CPF</label>
+          <p-inputMask mask="999.999.999-99" [(ngModel)]="selectedUser()!.cpf" styleClass="field-input"></p-inputMask>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Telefone</label>
+          <p-inputMask mask="(99) 99999-9999" [(ngModel)]="selectedUser()!.telefone"
+            styleClass="field-input"></p-inputMask>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Data de Nascimento</label>
+          <p-inputMask mask="99/99/9999" [(ngModel)]="selectedUser()!.data_nascimento" placeholder="DD/MM/AAAA"
+            styleClass="field-input"></p-inputMask>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Perfil de Acesso</label>
+          <select class="field-select" [(ngModel)]="selectedUser()!.role">
+            <option value="ADMIN">Administrador (ADMIN)</option>
+            <option value="USER">Usuário (USER)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Área Jurídica</label>
+          <input pInputText type="text" class="field-input" [(ngModel)]="selectedUser()!.area_juridica"
+            placeholder="Ex: Tributário" />
+        </div>
+        <div class="field-group">
+          <label class="field-label">URL do Avatar</label>
+          <input pInputText type="text" class="field-input" [(ngModel)]="selectedUser()!.avatar_url"
+            placeholder="https://..." />
+        </div>
+
+        <div class="panel-divider"></div>
+
+        <div class="toggle-row">
+          <span class="toggle-label">Usuário Ativo</span>
+          <div class="toggle" [class.on]="selectedUser()!.status === 'ativo'" (click)="alternarStatus()">
+          </div>
+        </div>
+
+        <div class="panel-actions">
+          <p-button label="💾 Salvar Alterações" styleClass="btn-primary" [fluid]="true" (onClick)="salvarEdicao()" />
+          <p-button label="🗑 Remover Usuário" styleClass="btn-danger" [fluid]="true" [outlined]="true"
+            (onClick)="excluir(selectedUser()!.id)" />
+        </div>
+
+      </div>
       }
     </div>
 
   </div>
 
   @if (modalAberto()) {
-    <div class="modal-overlay" (click)="fecharModalFora($event)">
-      <div class="modal">
-        <div class="modal-header">
-          <span class="modal-title">Novo Usuário</span>
-          <button class="modal-close" (click)="fecharModal()">✕</button>
+  <div class="modal-overlay" (click)="fecharModalFora($event)">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Novo Usuário</span>
+        <button class="modal-close" (click)="fecharModal()">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="field-group">
+          <label class="field-label">Nome Completo</label>
+          <input pInputText type="text" class="field-input" [(ngModel)]="novoProfile.nome"
+            placeholder="Ex: Maria Silva" />
         </div>
-        
-        <div class="modal-body">
-          <div class="field-group">
-            <label class="field-label">Nome Completo</label>
-            <input pInputText type="text" class="field-input" [(ngModel)]="novoProfile.nome" placeholder="Ex: Maria Silva"/>
-          </div>
-          <div class="field-group">
-            <label class="field-label">E-mail</label>
-            <input pInputText type="email" class="field-input" [(ngModel)]="novoProfile.email" placeholder="maria@matia.mt.gov.br"/>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">CPF</label>
-            <p-inputMask mask="999.999.999-99" [(ngModel)]="novoProfile.cpf" placeholder="000.000.000-00" styleClass="field-input"></p-inputMask>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Telefone</label>
-            <p-inputMask mask="(99) 99999-9999" [(ngModel)]="novoProfile.telefone" placeholder="(65) 99999-9999" styleClass="field-input"></p-inputMask>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Data de Nascimento</label>
-            <p-inputMask mask="99/99/9999" [(ngModel)]="novoProfile.data_nascimento" placeholder="DD/MM/AAAA" styleClass="field-input"></p-inputMask>
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Perfil de Acesso</label>
-            <select class="field-select" [(ngModel)]="novoProfile.role">
-              <option value="ADMIN">Administrador (ADMIN)</option>
-              <option value="USER">Usuário (USER)</option>
-            </select>
-          </div>
-          <div class="field-group">
-            <label class="field-label">Área Jurídica</label>
-            <input pInputText type="text" class="field-input" [(ngModel)]="novoProfile.area_juridica" placeholder="Ex: Trabalhista"/>
-          </div>
-          
-          <div class="field-group">
-            <label class="field-label">Senha de Acesso</label>
-            <input pInputText type="password" class="field-input" [(ngModel)]="novoProfile.profile_password" placeholder="Mínimo de 6 caracteres"/>
-          </div>
+        <div class="field-group">
+          <label class="field-label">E-mail</label>
+          <input pInputText type="email" class="field-input" [(ngModel)]="novoProfile.email"
+            placeholder="maria@matia.mt.gov.br" />
         </div>
 
-        <div class="modal-actions">
-          <p-button label="Cancelar" styleClass="btn-outline" [outlined]="true" (onClick)="fecharModal()"/>
-          <p-button label="Criar Usuário" icon="pi pi-check" styleClass="btn-primary" (onClick)="salvarCadastro()"/>
+        <div class="field-group">
+          <label class="field-label">CPF</label>
+          <p-inputMask mask="999.999.999-99" [(ngModel)]="novoProfile.cpf" placeholder="000.000.000-00"
+            styleClass="field-input"></p-inputMask>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Telefone</label>
+          <p-inputMask mask="(99) 99999-9999" [(ngModel)]="novoProfile.telefone" placeholder="(65) 99999-9999"
+            styleClass="field-input"></p-inputMask>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Data de Nascimento</label>
+          <p-inputMask mask="99/99/9999" [(ngModel)]="novoProfile.data_nascimento" placeholder="DD/MM/AAAA"
+            styleClass="field-input"></p-inputMask>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Perfil de Acesso</label>
+          <select class="field-select" [(ngModel)]="novoProfile.role">
+            <option value="ADMIN">Administrador (ADMIN)</option>
+            <option value="USER">Usuário (USER)</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Área Jurídica</label>
+          <input pInputText type="text" class="field-input" [(ngModel)]="novoProfile.area_juridica"
+            placeholder="Ex: Trabalhista" />
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Senha de Acesso</label>
+          <input pInputText type="password" class="field-input" [(ngModel)]="novoProfile.profile_password"
+            placeholder="Mínimo de 6 caracteres" />
         </div>
       </div>
+
+      <div class="modal-actions">
+        <p-button label="Cancelar" styleClass="btn-outline" [outlined]="true" (onClick)="fecharModal()" />
+        <p-button label="Criar Usuário" icon="pi pi-check" styleClass="btn-primary" (onClick)="salvarCadastro()" />
+      </div>
     </div>
+  </div>
   }
 
 
-<p-toast></p-toast>
+  <p-toast></p-toast>
   <p-confirmDialog [style]="{width: '450px'}"></p-confirmDialog>
 </div>

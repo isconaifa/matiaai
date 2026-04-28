@@ -20,5 +20,7 @@ export class Header {
   @Output() toggleMenu = new EventEmitter<void>();
 
  
-
+ logout() {
+    this.authService.logout();
+  }
 }

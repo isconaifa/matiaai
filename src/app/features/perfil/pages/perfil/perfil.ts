@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
@@ -11,6 +11,7 @@ import { BrlCurrencyPipe } from '../../../../shared/pipes/brl-currency-pipe';
 
 // Imports dos seus Services e Models
 import { AuthService } from '../../../../core/services/auth.service';
+import { CompanyService } from '../../../../core/services/company-service';
 import { UserService } from '../../../../core/services/user.service';
 import { UserProfile, UserProfileUpdate, ActivityHistory, UserPayload} from '../../../../shared/models/user.models';
 import { Setup2FAResponse } from '../../../../shared/models/auth.models';
@@ -65,6 +66,7 @@ export class Perfil implements OnInit {
   // Injeções de dependência
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private _companyService = inject(CompanyService);
   private messageService = inject(MessageService);
   private sanitizer = inject(DomSanitizer);
 
@@ -90,6 +92,9 @@ export class Perfil implements OnInit {
   // Dados do Usuário
   userProfile: UserProfile | null = null;
 
+  // Signal do dados das empresas
+  empresasList = signal<any[]>([]);
+
   // Arrays
   areas: AreaJuridica[] = [];
   atividades: ActivityHistory[] = [];
@@ -108,6 +113,7 @@ export class Perfil implements OnInit {
       } as UserProfile;
     }
     this.carregarDadosDoUsuario();
+    this.carregarEmpresas();
   }
 
   carregarDadosDoUsuario() {
@@ -125,6 +131,23 @@ export class Perfil implements OnInit {
         this.mostrarToast('error', 'Erro', 'Não foi possível carregar os dados.');
       }
     });
+  }
+
+  // Função para carregar as empresas
+  carregarEmpresas() {
+    this._companyService.getCompanies().subscribe({
+      next: (res: any) => {
+        const dados = Array.isArray(res) ? res : (res.data || []);
+        this.empresasList.set(dados);
+      }
+    });
+  }
+
+  // Função para retornar o nome da empresa baseado no ID que vem no userProfile
+  getNomeEmpresa(id: string | null | undefined): string {
+    if (!id) return 'Não informada';
+    const empresa = this.empresasList().find(e => e.id === id);
+    return empresa ? empresa.name : 'Carregando...';
   }
 
   // ==========================================

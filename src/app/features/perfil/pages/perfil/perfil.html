@@ -21,7 +21,7 @@
           <div class="profile-name">{{ userProfile?.nome || 'Carregando...' }}</div>
           <div class="profile-email">{{ userProfile?.email || '...' }}</div>
           <div class="profile-badge">⭐ {{ userProfile?.role || 'Usuário' }}</div>
-          
+
           <div class="profile-stats">
             <div class="profile-stat">
               <div class="stat-val">1.284</div>
@@ -42,11 +42,12 @@
           </div>
 
           <div class="profile-divider"></div>
-          
+
           <div class="profile-meta-item">🏛 Área: <span>{{ userProfile?.area_juridica || 'Não definida' }}</span></div>
           <div class="profile-meta-item">📅 Desde: <span>{{ (userProfile?.creation_time ?? '') | brDate }}</span></div>
-          <div class="profile-meta-item">🕐 Último acesso: 
-            <span>{{ userProfile?.ultimo_acesso ? (userProfile?.ultimo_acesso | date: 'dd/MM/yyyy HH:mm') : 'Primeiro acesso' }}</span>
+          <div class="profile-meta-item">🕐 Último acesso:
+            <span>{{ userProfile?.ultimo_acesso ? (userProfile?.ultimo_acesso | date: 'dd/MM/yyyy HH:mm') : 'Primeiro
+              acesso' }}</span>
           </div>
           <div class="profile-meta-item">🔐 2FA:
             <span [style.color]="is2FAEnabled ? '#10b981' : '#ef4444'" style="font-weight: bold;">
@@ -73,8 +74,8 @@
 
             <div class="field-group">
               <label class="field-label">CPF</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.cpf" disabled 
-              style="opacity: 0.6; cursor: not-allowed;"/>
+              <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.cpf" disabled
+                style="opacity: 0.6; cursor: not-allowed;" />
             </div>
 
             <div class="field-group">
@@ -93,9 +94,10 @@
             </div>
 
             <div class="field-group">
-              <label class="field-label">Empresa (ID)</label>
-              <input pInputText type="text" class="field-input" [(ngModel)]="userProfile.empresa_id" disabled
-                style="opacity: 0.6; cursor: not-allowed;"/>
+              <label class="field-label">Empresa Vinculada</label>
+              <input pInputText type="text" class="field-input" [value]="getNomeEmpresa(userProfile.empresa_id)"
+                disabled
+                style="opacity: 0.8; cursor: not-allowed; background-color: #f8f9fa; font-weight: bold; color: #00296b;" />
             </div>
 
             <div class="field-group">
@@ -126,8 +128,7 @@
           <div class="section-actions">
             <p-button label="Cancelar" styleClass="btn-outline" [outlined]="true"
               (onClick)="carregarDadosDoUsuario()"></p-button>
-            <p-button label="💾 Salvar Dados" styleClass="btn-primary"
-              (onClick)="salvarDadosPessoais()"></p-button>
+            <p-button label="💾 Salvar Dados" styleClass="btn-primary" (onClick)="salvarDadosPessoais()"></p-button>
           </div>
           } @else {
           <div class="loading-wrap" style="display: flex; flex-direction: column; align-items: center; padding: 3rem;">
@@ -177,7 +178,8 @@
             <div class="field-group span2">
               <label class="field-label">Senha Atual</label>
               <div class="pw-wrap">
-                <input pInputText [type]="showAtual ? 'text' : 'password'" class="field-input" placeholder="••••••••••" />
+                <input pInputText [type]="showAtual ? 'text' : 'password'" class="field-input"
+                  placeholder="••••••••••" />
                 <button class="pw-toggle" (click)="showAtual = !showAtual">
                   <i class="pi" [class.pi-eye]="!showAtual" [class.pi-eye-slash]="showAtual"></i>
                 </button>
@@ -186,7 +188,8 @@
             <div class="field-group">
               <label class="field-label">Nova Senha</label>
               <div class="pw-wrap">
-                <input pInputText [type]="showNova ? 'text' : 'password'" class="field-input" (input)="checarForca($event)" />
+                <input pInputText [type]="showNova ? 'text' : 'password'" class="field-input"
+                  (input)="checarForca($event)" />
                 <button class="pw-toggle" (click)="showNova = !showNova">
                   <i class="pi" [class.pi-eye]="!showNova" [class.pi-eye-slash]="showNova"></i>
                 </button>
@@ -215,14 +218,16 @@
     [style]="{width: '450px'}" [draggable]="false" [resizable]="false">
     <div style="text-align: center; padding: 1rem 0;">
       <p style="color: #64748b; margin-bottom: 1.5rem;">Escaneie o QR Code abaixo no seu App de Autenticação:</p>
-      
-      <div style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
+
+      <div
+        style="background: white; padding: 1rem; border-radius: 12px; display: inline-block; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 1.5rem;">
         @if (qrCodeImage) {
-          <img [src]="qrCodeImage" alt="QR Code" style="width: 200px; height: 200px; display: block;">
+        <img [src]="qrCodeImage" alt="QR Code" style="width: 200px; height: 200px; display: block;">
         } @else {
-          <div style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #f1f5f9;">
-            <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
-          </div>
+        <div
+          style="width: 200px; height: 200px; display: flex; align-items: center; justify-content: center; background: #f1f5f9;">
+          <i class="pi pi-spin pi-spinner" style="font-size: 2rem;"></i>
+        </div>
         }
       </div>
 
@@ -235,7 +240,8 @@
     </div>
     <ng-template pTemplate="footer">
       <p-button label="Cancelar" styleClass="p-button-text" (onClick)="displayModal2FA = false"></p-button>
-      <p-button label="Validar e Ativar" styleClass="btn-primary" [disabled]="setupOtpValue.length < 6" (onClick)="confirmarAtivacao()"></p-button>
+      <p-button label="Validar e Ativar" styleClass="btn-primary" [disabled]="setupOtpValue.length < 6"
+        (onClick)="confirmarAtivacao()"></p-button>
     </ng-template>
   </p-dialog>
 
@@ -244,14 +250,15 @@
     <div style="text-align: center; padding: 1rem 0;">
       <i class="pi pi-exclamation-triangle text-red-500" style="font-size: 3rem; margin-bottom: 1rem;"></i>
       <p style="color: #64748b; margin-bottom: 1.5rem;">Para desativar, insira o código atual do seu aplicativo.</p>
-      
+
       <div style="display: flex; justify-content: center;">
         <p-inputOtp [(ngModel)]="disableOtpValue" [length]="6" [integerOnly]="true"></p-inputOtp>
       </div>
     </div>
     <ng-template pTemplate="footer">
       <p-button label="Manter Ativado" styleClass="p-button-text" (onClick)="displayModalDisable2FA = false"></p-button>
-      <p-button label="Confirmar Desativação" styleClass="p-button-danger" [disabled]="disableOtpValue.length < 6" (onClick)="confirmarDesativacao()"></p-button>
+      <p-button label="Confirmar Desativação" styleClass="p-button-danger" [disabled]="disableOtpValue.length < 6"
+        (onClick)="confirmarDesativacao()"></p-button>
     </ng-template>
   </p-dialog>
 

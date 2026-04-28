@@ -29,6 +29,10 @@
       <span class="user-role">{{ user()?.role }}</span>
     </div>
     <p-avatar icon="pi pi-user" shape="circle" size="large" styleClass="user-avatar" />
+
+    <p-button [text]="true" styleClass="logout-btn" title="Sair do sistema" (click)="logout()" >
+      <span class="material-symbols-outlined">logout</span>
+    </p-button>
   </div>
 
 </p-toolbar>
