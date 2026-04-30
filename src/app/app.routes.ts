@@ -20,6 +20,16 @@ export const routes: Routes = [
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/pages/login-two-factor/login-two-factor').then(m => m.LoginTwoFactor)
   },
+  {
+    path: 'reset-password',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./features/auth/pages/reset-password/reset-password').then(m => m.ResetPassword)
+  },
+  {
+    path: 'forgot-password',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./features/auth/pages/forgot-password/forgot-password').then(m => m.ForgotPassword)
+  },
 
   // Sistema (com layout) - Área Protegida
   {

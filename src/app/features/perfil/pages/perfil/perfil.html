@@ -169,50 +169,104 @@
         </div>
       </div>
 
-      <div class="section-card">
-        <div class="section-header">
-          <span class="section-title">🔒 Alterar Senha</span>
-        </div>
-        <div class="section-body">
-          <div class="form-grid">
-            <div class="field-group span2">
-              <label class="field-label">Senha Atual</label>
-              <div class="pw-wrap">
-                <input pInputText [type]="showAtual ? 'text' : 'password'" class="field-input"
-                  placeholder="••••••••••" />
-                <button class="pw-toggle" (click)="showAtual = !showAtual">
-                  <i class="pi" [class.pi-eye]="!showAtual" [class.pi-eye-slash]="showAtual"></i>
-                </button>
-              </div>
-            </div>
-            <div class="field-group">
-              <label class="field-label">Nova Senha</label>
-              <div class="pw-wrap">
-                <input pInputText [type]="showNova ? 'text' : 'password'" class="field-input"
-                  (input)="checarForca($event)" />
-                <button class="pw-toggle" (click)="showNova = !showNova">
-                  <i class="pi" [class.pi-eye]="!showNova" [class.pi-eye-slash]="showNova"></i>
-                </button>
-              </div>
-            </div>
-            <div class="field-group">
-              <label class="field-label">Confirmar Nova Senha</label>
-              <div class="pw-wrap">
-                <input pInputText [type]="showConfirm ? 'text' : 'password'" class="field-input" />
-                <button class="pw-toggle" (click)="showConfirm = !showConfirm">
-                  <i class="pi" [class.pi-eye]="!showConfirm" [class.pi-eye-slash]="showConfirm"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div class="section-actions">
-            <p-button label="🔒 Alterar Senha" styleClass="btn-primary" [disabled]="true"></p-button>
-          </div>
-        </div>
-      </div>
+    
 
-    </div>
+      <div class="section-card">
+  <div class="section-header">
+    <span class="section-title">🔒 Alterar Senha</span>
   </div>
+  <div class="section-body">
+    
+    <!-- Envolvemos sua grid num form do Angular -->
+    <form [formGroup]="passwordForm" (ngSubmit)="onSubmitPassword()">
+      <div class="form-grid">
+        
+        <!-- SENHA ATUAL -->
+        <div class="field-group span2">
+          <label class="field-label">Senha Atual</label>
+          <div class="pw-wrap">
+            <input 
+              pInputText 
+              [type]="showAtual ? 'text' : 'password'" 
+              formControlName="currentPassword"
+              class="field-input"
+              placeholder="••••••••••" 
+            />
+            <button type="button" class="pw-toggle" (click)="showAtual = !showAtual">
+              <i class="pi" [class.pi-eye]="!showAtual" [class.pi-eye-slash]="showAtual"></i>
+            </button>
+          </div>
+          <!-- Erro Senha Atual -->
+          @if (passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched) {
+            <small style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">
+              A senha atual é obrigatória.
+            </small>
+          }
+        </div>
+
+        <!-- NOVA SENHA -->
+        <div class="field-group">
+          <label class="field-label">Nova Senha</label>
+          <div class="pw-wrap">
+            <input 
+              pInputText 
+              [type]="showNova ? 'text' : 'password'" 
+              formControlName="newPassword"
+              class="field-input"
+              (input)="checarForca($event)" 
+            />
+            <button type="button" class="pw-toggle" (click)="showNova = !showNova">
+              <i class="pi" [class.pi-eye]="!showNova" [class.pi-eye-slash]="showNova"></i>
+            </button>
+          </div>
+          <!-- Erro Nova Senha -->
+          @if (passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched) {
+            <small style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">
+              @if (passwordForm.get('newPassword')?.hasError('required')) { A nova senha é obrigatória. }
+              @if (passwordForm.get('newPassword')?.hasError('minlength')) { Mínimo de 6 caracteres. }
+            </small>
+          }
+        </div>
+
+        <!-- CONFIRMAR NOVA SENHA -->
+        <div class="field-group">
+          <label class="field-label">Confirmar Nova Senha</label>
+          <div class="pw-wrap">
+            <input 
+              pInputText 
+              [type]="showConfirm ? 'text' : 'password'" 
+              formControlName="confirmPassword"
+              class="field-input" 
+            />
+            <button type="button" class="pw-toggle" (click)="showConfirm = !showConfirm">
+              <i class="pi" [class.pi-eye]="!showConfirm" [class.pi-eye-slash]="showConfirm"></i>
+            </button>
+          </div>
+          <!-- Erro Confirmar Senha -->
+          @if (passwordForm.get('confirmPassword')?.touched) {
+            <small style="color: #ef4444; font-size: 0.8rem; margin-top: 0.25rem; display: block;">
+              @if (passwordForm.get('confirmPassword')?.hasError('required')) { A confirmação é obrigatória. }
+              @if (passwordForm.hasError('passwordMismatch')) { As senhas não coincidem. }
+            </small>
+          }
+        </div>
+
+      </div>
+      
+      <div class="section-actions" style="margin-top: 1.5rem;">
+        <!-- Botão agora obedece ao estado do formulário -->
+        <p-button 
+          type="submit"
+          label="🔒 Alterar Senha" 
+          styleClass="btn-primary" 
+          [loading]="isChangingPassword"
+          [disabled]="passwordForm.invalid">
+        </p-button>
+      </div>
+    </form>
+    
+  </div>
+</div>
 
   <p-dialog header="Configurar Autenticador (2FA)" [(visible)]="displayModal2FA" [modal]="true"
     [style]="{width: '450px'}" [draggable]="false" [resizable]="false">

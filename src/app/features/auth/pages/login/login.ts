@@ -1,5 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
@@ -13,7 +14,12 @@ import { RippleModule } from 'primeng/ripple';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ButtonModule, InputTextModule, RippleModule, ReactiveFormsModule, PasswordModule, ToastModule],
+  imports: [ButtonModule,
+    RouterModule,
+    InputTextModule,
+    RippleModule, ReactiveFormsModule,
+    PasswordModule,
+    ToastModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -52,18 +58,18 @@ export class Login {
         if ('requires_2fa' in response) {
           // O AuthService já salvou o preAuthToken. O MessageService avisa.
           // Só mandamos ele pra tela do código.
-          this.router.navigate(['/login-two-factor']); 
-        } 
-        
+          this.router.navigate(['/login-two-factor']);
+        }
+
         // Cenário 2: O usuário NÃO TEM 2FA ativado (Entrada Direta)
         else if ('token' in response) {
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Bem-vindo!', 
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Bem-vindo!',
             detail: 'Login realizado com sucesso.',
             life: 3000
           });
-          this.router.navigate(['/matia/chat']); 
+          this.router.navigate(['/matia/chat']);
         }
       },
       error: (error) => {

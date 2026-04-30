@@ -144,7 +144,9 @@
         }
 
         <div class="forgot-row">
-          <button pButton type="button" class="p-button-text forgot-btn">Esqueceu sua senha?</button>
+          <button pButton type="button" routerLink="/forgot-password" class="p-button-text forgot-btn">
+            Esqueceu sua senha?
+          </button>
         </div>
 
         <p-button label="Entrar" [fluid]="true" styleClass="btn-login" type="submit" [disabled]="loginForm.invalid"

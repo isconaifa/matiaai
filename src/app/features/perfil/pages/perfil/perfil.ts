@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
@@ -56,7 +57,9 @@ interface Atividade {
     InputTextModule,
     ToastModule,
     BrDatePipe,
-    BrlCurrencyPipe
+    BrlCurrencyPipe,
+    ReactiveFormsModule
+  
   ],
   templateUrl: './perfil.html',
   styleUrl: './perfil.scss',
@@ -65,6 +68,7 @@ export class Perfil implements OnInit {
 
   // Injeções de dependência
   private authService = inject(AuthService);
+  private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private _companyService = inject(CompanyService);
   private messageService = inject(MessageService);
@@ -78,6 +82,10 @@ export class Perfil implements OnInit {
   forcaLabel = '—';
   forcaClasse = '';
   forcaCor = '';
+
+  // Variáveis do formulário e carregamento
+  passwordForm!: FormGroup;
+  isChangingPassword = false;
 
   // Variáveis de Estado do 2FA (Ativação)
   is2FAEnabled: boolean = false;
@@ -112,6 +120,7 @@ export class Perfil implements OnInit {
         empresa_id: usuarioLogado.empresa_id
       } as UserProfile;
     }
+    this.initPasswordForm();
     this.carregarDadosDoUsuario();
     this.carregarEmpresas();
   }
@@ -149,6 +158,58 @@ export class Perfil implements OnInit {
     const empresa = this.empresasList().find(e => e.id === id);
     return empresa ? empresa.name : 'Carregando...';
   }
+
+  private initPasswordForm(): void {
+    this.passwordForm = this.fb.group({
+      currentPassword: ['', [Validators.required]],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]]
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  // Validador que garante que a nova senha e a confirmação são iguais
+  private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+    const password = group.get('newPassword')?.value;
+    const confirm = group.get('confirmPassword')?.value;
+    return password === confirm ? null : { passwordMismatch: true };
+  }
+
+  // Método que envia os dados para a API
+  onSubmitPassword(): void {
+    if (this.passwordForm.invalid) {
+      this.passwordForm.markAllAsTouched();
+      return;
+    }
+
+    this.isChangingPassword = true;
+    
+    // Pega os valores desestruturados do formulário
+    const { currentPassword, newPassword } = this.passwordForm.value;
+
+    this.authService.changePassword({ currentPassword, newPassword }).subscribe({
+      next: (response) => {
+        this.isChangingPassword = false;
+        this.passwordForm.reset(); // Limpa os campos após o sucesso
+        
+        // Garante que os olhinhos voltem a ficar fechados
+        this.showAtual = false; this.showNova = false; this.showConfirm = false;
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Sucesso',
+          detail: response.message || 'Senha alterada com sucesso!'
+        });
+      },
+      error: (err) => {
+        this.isChangingPassword = false;
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Erro',
+          detail: err.error?.message || 'Senha atual incorreta ou erro ao alterar.'
+        });
+      }
+    }); 
+}
 
   // ==========================================
   // FLUXO 2FA - ATIVAÇÃO

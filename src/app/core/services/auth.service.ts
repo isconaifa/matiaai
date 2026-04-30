@@ -4,7 +4,14 @@ import { Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
 import { MessageService } from 'primeng/api';
 import { environment } from '../../../environments/environment';
-import { LoginRequest, LoginResponse, AuthResponse, Setup2FAResponse, ApiResponse } from '../../shared/models/auth.models';
+import { 
+  LoginRequest, 
+  LoginResponse,
+  ChangePasswordRequest, 
+  AuthResponse, 
+  Setup2FAResponse,
+   ApiResponse,
+   ResetPasswordRequest } from '../../shared/models/auth.models';
 import { UserPayload } from '../../shared/models/user.models';
 
 @Injectable({
@@ -42,6 +49,25 @@ export class AuthService {
         this.logout();
       }
     }
+  }
+
+  // Rota que o Interceptor chama silenciosamente
+  refreshToken(): Observable<LoginResponse> {
+    // Passamos o objeto de opções com { withCredentials: true }
+    // Isso avisa o navegador: "Pegue o cookie httpOnly de refresh e mande junto!"
+    return this.http.post<LoginResponse>(
+      `${this.API_URL}/refresh`, 
+      {}, // Não mandamos nada no body, a mágica está no cookie
+      { withCredentials: true } 
+    ).pipe(
+      tap((response) => {
+        // Quando voltar com sucesso, atualizamos apenas o Access Token normal
+        if (response.token) {
+          localStorage.setItem('matia_token', response.token);
+          // O backend já terá renovado o Cookie do Refresh Token automaticamente
+        }
+      })
+    );
   }
 
 
@@ -106,6 +132,32 @@ export class AuthService {
 
     this.currentUser.set(response.user);
     this.isAuthenticated.set(true);
+  }
+
+  // ==========================================
+  // RECUPERAÇÃO E ALTERAÇÃO DE SENHA
+  // ==========================================
+
+   // 1. Esqueci minha senha (Público)
+  
+  forgotPassword(email: string): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.API_URL}/forgot-password`, { email });
+  }
+
+  /**
+   * 2. Redefinir Senha (Público - via link do e-mail)
+   * Recebe o token da URL e a nova senha definida pelo usuário.
+   */
+  resetPassword(data: ResetPasswordRequest): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.API_URL}/reset-password`, data);
+  }
+
+  /**
+   * 3. Alterar Senha (Privado - Usuário Logado)
+   * Exige a senha atual para confirmar a troca pela nova.
+   */
+  changePassword(data: ChangePasswordRequest): Observable<ApiResponse> {
+    return this.http.post<ApiResponse>(`${this.API_URL}/change-password`, data);
   }
 
   logout(): void {
