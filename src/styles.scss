@@ -19,6 +19,17 @@ app-root {
   display: block; // Garante que o Angular se comporte como um contêiner de altura
 }
 
+/* Adiciona o asterisco vermelho automaticamente em labels com a classe .required */
+label.required::after {
+    content: " *";
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 1.1rem; 
+    line-height: 0; 
+    vertical-align: middle; 
+    margin-left: 0px; 
+}
+
 /* ==========================================
    Correção Global do InputMask do PrimeNG
    ========================================== */

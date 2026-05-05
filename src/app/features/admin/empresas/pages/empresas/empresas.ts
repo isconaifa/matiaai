@@ -206,35 +206,74 @@ getIniciais(nome?: string): string {
   }
 
   salvarCadastro() {
-    if (this.editando()) {
-      // Atualização
-      this._companyService.updateCompany(this.novaEmpresa.id!, this.novaEmpresa).subscribe({
-        next: () => { 
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa atualizada com sucesso!' });
-          this.fecharModal(); 
-          this.carregarEmpresas(); 
-        }
-      });
-    } else {
-      // ➕ Criação
-      const payload: RegisterCompanyRequest = {
-        company: { ...this.novaEmpresa as CompanyData },
-        admin: { 
-          ...this.novoAdmin as AdminData, 
-          // O seu HTML usa type="date", que já vem no formato YYYY-MM-DD. 
-          // Não precisa formatar se for input date puro.
-          data_nascimento: this.novoAdmin.data_nascimento || '' 
-        }
-      };
-      this._companyService.registerCompany(payload).subscribe({
-        next: () => { 
-          this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa cadastrada com sucesso!' });
-          this.fecharModal(); 
-          this.carregarEmpresas(); 
-        }
-      });
+  if (this.editando()) {
+    // Atualização
+    this._companyService.updateCompany(this.novaEmpresa.id!, this.novaEmpresa).subscribe({
+      next: () => { 
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa atualizada com sucesso!' });
+        this.fecharModal(); 
+        this.carregarEmpresas(); 
+      },
+      // 💡 ADIÇÃO: Tratamento de erro na edição
+      error: (err) => {
+        console.error('Erro ao atualizar:', err);
+        this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Não foi possível atualizar a empresa.' });
+      }
+    });
+  } else {
+    // ➕ Criação
+
+    // =========================================================
+    // 🛡️ PASSO 1: VALIDAÇÃO DE FRONT-END (GUARDA-COSTAS)
+    // =========================================================
+
+    // 1.1 Verifica se os campos obrigatórios da Empresa estão preenchidos
+    if (!this.novaEmpresa.name || !this.novaEmpresa.cnpj || !this.novaEmpresa.email || !this.novaEmpresa.phone || !this.novaEmpresa.plano) {
+      this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha todos os campos obrigatórios da Empresa (*).' });
+      return; // 🛑 Para a execução aqui, não vai pro backend!
     }
+
+    // 1.2 Verifica se o CNPJ tem 14 dígitos (removendo pontos e barras da máscara)
+    const cnpjLimpo = this.novaEmpresa.cnpj.replace(/\D/g, ''); 
+    if (cnpjLimpo.length < 14) {
+      this.messageService.add({ severity: 'warn', summary: 'CNPJ Incompleto', detail: 'O CNPJ digitado não possui os 14 números.' });
+      return; // 🛑 Para a execução aqui!
+    }
+
+    // 1.3 Verifica se os campos obrigatórios do Admin estão preenchidos
+    if (!this.novoAdmin.nome || !this.novoAdmin.cpf || !this.novoAdmin.email || !this.novaEmpresa.phone || !this.novoAdmin.profile_password) {
+      this.messageService.add({ severity: 'warn', summary: 'Atenção', detail: 'Preencha todos os campos obrigatórios do Administrador (*).' });
+      return; // 🛑 Para a execução aqui!
+    }
+
+    // =========================================================
+    // 🚀 PASSO 2: MONTAGEM E ENVIO (Se passou pelas validações)
+    // =========================================================
+
+    const payload: RegisterCompanyRequest = {
+      company: { ...this.novaEmpresa as CompanyData },
+      admin: { 
+        ...this.novoAdmin as AdminData, 
+        data_nascimento: this.novoAdmin.data_nascimento || '' 
+      }
+    };
+
+    this._companyService.registerCompany(payload).subscribe({
+      next: () => { 
+        this.messageService.add({ severity: 'success', summary: 'Sucesso', detail: 'Empresa cadastrada com sucesso!' });
+        this.fecharModal(); 
+        this.carregarEmpresas(); 
+      },
+      // 💡 ADIÇÃO: Captura de erros vindos do Fastify (ex: CNPJ já cadastrado)
+      error: (err) => {
+        console.error('Erro retornado pelo backend:', err);
+        // Tenta pegar a mensagem de erro específica do backend, se não, usa uma genérica
+        const mensagemErro = err.error?.message || 'Verifique os dados e tente novamente.';
+        this.messageService.add({ severity: 'error', summary: 'Falha no Cadastro', detail: mensagemErro });
+      }
+    });
   }
+}
 
   // Helper opcional se o seu input de data mudar para texto
   private formatarDataParaBanco(dataBr: string): string {

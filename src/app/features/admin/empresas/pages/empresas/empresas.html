@@ -225,38 +225,38 @@
         <div class="section-label">Dados da Empresa</div>
         <div class="form-grid">
           <div class="field-group span2">
-            <label class="field-label">Nome da Empresa</label>
+            <label class="field-label required">Nome da Empresa</label>
             <input pInputText type="text" class="field-input" [(ngModel)]="novaEmpresa.name"
               placeholder="Ex: Tribunal de Justiça de MT" />
           </div>
 
           <div class="field-group">
-            <label class="field-label">Código</label>
+            <label class="field-label required">Código</label>
             <input pInputText type="text" class="field-input" [(ngModel)]="novaEmpresa.code" placeholder="Ex: TJMT" />
           </div>
 
           <div class="field-group">
-            <label class="field-label">CNPJ</label>
+            <label class="field-label required">CNPJ</label>
             <p-inputMask mask="99.999.999/9999-99" [(ngModel)]="novaEmpresa.cnpj" placeholder="00.000.000/0000-00"
               styleClass="field-input">
             </p-inputMask>
           </div>
 
           <div class="field-group">
-            <label class="field-label">E-mail</label>
+            <label class="field-label required">E-mail</label>
             <input pInputText type="email" class="field-input" [(ngModel)]="novaEmpresa.email"
               placeholder="contato@empresa.com" />
           </div>
 
           <div class="field-group">
-            <label class="field-label">Telefone</label>
+            <label class="field-label required">Telefone</label>
             <p-inputMask mask="(99) 99999-9999" [(ngModel)]="novaEmpresa.phone" placeholder="(65) 99999-9999"
               styleClass="field-input">
             </p-inputMask>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Plano</label>
+            <label class="field-label required">Plano</label>
             <select class="field-select" [(ngModel)]="novaEmpresa.plano">
               <option value="trial">Trial (30 dias)</option>
               <option value="basico">Básico</option>
@@ -280,38 +280,38 @@
         <div class="section-label" style="margin-top: 1.5rem;">Dados do Administrador Base</div>
         <div class="form-grid">
           <div class="field-group span2">
-            <label class="field-label">Nome Completo</label>
+            <label class="field-label required">Nome Completo</label>
             <input pInputText type="text" class="field-input" [(ngModel)]="novoAdmin.nome"
               placeholder="Nome completo" />
           </div>
 
           <div class="field-group">
-            <label class="field-label">E-mail</label>
+            <label class="field-label required">E-mail</label>
             <input pInputText type="email" class="field-input" [(ngModel)]="novoAdmin.email"
               placeholder="admin@empresa.com" />
           </div>
 
           <div class="field-group">
-            <label class="field-label">CPF</label>
+            <label class="field-label required">CPF</label>
             <p-inputMask mask="999.999.999-99" [(ngModel)]="novoAdmin.cpf" placeholder="000.000.000-00"
               styleClass="field-input">
             </p-inputMask>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Telefone</label>
+            <label class="field-label required">Telefone</label>
             <p-inputMask mask="(99) 99999-9999" [(ngModel)]="novoAdmin.telefone" placeholder="(65) 99999-9999"
               styleClass="field-input">
             </p-inputMask>
           </div>
 
           <div class="field-group">
-            <label class="field-label">Data de Nascimento</label>
+            <label class="field-label required">Data de Nascimento</label>
             <input pInputText type="date" class="field-input" [(ngModel)]="novoAdmin.data_nascimento" />
           </div>
 
           <div class="field-group span2">
-            <label class="field-label">Senha de Acesso</label>
+            <label class="field-label required">Senha de Acesso</label>
             <input pInputText type="password" class="field-input" [(ngModel)]="novoAdmin.profile_password"
               placeholder="Mínimo 8 caracteres" />
           </div>

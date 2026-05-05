@@ -35,7 +35,6 @@ export class UserService {
   
   //Atualiza informações de contato e nome
   updateProfile(data: UserProfileUpdate): Observable<ApiResponse> {
-    // 1. Mudamos para /me (a rota que usa o ID do Token)
     // Isso vai gerar: http://localhost:3002/api/profile/me
     return this.http.put<ApiResponse>(`${this.API_URL}/me`, data);
 }

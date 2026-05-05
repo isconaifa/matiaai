@@ -99,8 +99,8 @@ export class Usuarios {
 
   salvarCadastro() {
     // 1. Validação Básica
-    if (!this.novoProfile.nome || !this.novoProfile.email || !this.novoProfile.profile_password) {
-      this.mostrarMensagem('error', 'Campos Obrigatórios', 'Preencha o Nome, E-mail e Senha.');
+    if (!this.novoProfile.nome || !this.novoProfile.email || !this.novoProfile.cpf || !this.novoProfile.data_nascimento || !this.novoProfile.profile_password) {
+      this.mostrarMensagem('error', 'Campos Obrigatórios', 'Preencha o Nome, E-mail, CPF, Data de Nascimento e Senha.');
       return;
     }
 

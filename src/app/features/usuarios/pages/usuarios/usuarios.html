@@ -195,18 +195,18 @@
 
       <div class="modal-body">
         <div class="field-group">
-          <label class="field-label">Nome Completo</label>
+          <label class="field-label required">Nome Completo</label>
           <input pInputText type="text" class="field-input" [(ngModel)]="novoProfile.nome"
             placeholder="Ex: Maria Silva" />
         </div>
         <div class="field-group">
-          <label class="field-label">E-mail</label>
+          <label class="field-label required">E-mail</label>
           <input pInputText type="email" class="field-input" [(ngModel)]="novoProfile.email"
             placeholder="maria@matia.mt.gov.br" />
         </div>
 
         <div class="field-group">
-          <label class="field-label">CPF</label>
+          <label class="field-label required">CPF</label>
           <p-inputMask mask="999.999.999-99" [(ngModel)]="novoProfile.cpf" placeholder="000.000.000-00"
             styleClass="field-input"></p-inputMask>
         </div>
@@ -216,7 +216,7 @@
             styleClass="field-input"></p-inputMask>
         </div>
         <div class="field-group">
-          <label class="field-label">Data de Nascimento</label>
+          <label class="field-label required">Data de Nascimento</label>
           <p-inputMask mask="99/99/9999" [(ngModel)]="novoProfile.data_nascimento" placeholder="DD/MM/AAAA"
             styleClass="field-input"></p-inputMask>
         </div>
@@ -235,7 +235,7 @@
         </div>
 
         <div class="field-group">
-          <label class="field-label">Senha de Acesso</label>
+          <label class="field-label required">Senha de Acesso</label>
           <input pInputText type="password" class="field-input" [(ngModel)]="novoProfile.profile_password"
             placeholder="Mínimo de 6 caracteres" />
         </div>
